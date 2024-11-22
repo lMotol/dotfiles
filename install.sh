@@ -4,10 +4,24 @@
 sudo apt-get install -y curl git ripgrep tmux
 
 # tmux plugin manager のインストール
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+TARGET_DIR="~/.tmux/plugins/tpm"
+if [ -d "$TARGET_DIR" ]; then
+    if [ -d "$TARGET_DIR/.git" ]; then
+        cd "$TARGET_DIR"
+        git pull origin master
+    else
+        exit 1
+    fi
+else
+    git clone https://github.com/tmux-plugins/tpm $TARGET_DIR
+fi
+
+tmux &
 ~/.tmux/plugins/tpm/bin/install_plugins
+tmux kill-server
 
 # nvim のインストール
+cd
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod u+x nvim.appimage
 ./nvim.appimage --appimage-extract
