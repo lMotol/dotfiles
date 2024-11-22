@@ -16,20 +16,20 @@ else
     git clone https://github.com/tmux-plugins/tpm $TARGET_DIR
 fi
 
-tmux &
-~/.tmux/plugins/tpm/bin/install_plugins
-tmux kill-server
-
 # nvim のインストール
-cd
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-chmod u+x nvim.appimage
-./nvim.appimage --appimage-extract
-./squashfs-root/AppRun --version
-sudo mv squashfs-root /
-sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
-which nvim
-nvim --version
+if command -v nvim >/dev/null 2>&1; then
+    echo "Neovim は既にインストールされています。"
+else
+    cd
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    chmod u+x nvim.appimage
+    ./nvim.appimage --appimage-extract
+    ./squashfs-root/AppRun --version
+    sudo mv squashfs-root /
+    sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
+    which nvim
+    nvim --version
+fi
 
 # 無視するパターンを定義
 IGNORE_PATTERN="^\.(git|travis)"
@@ -53,12 +53,25 @@ link_dotfiles() {
 echo "Creating dotfile links..."
 
 # カレントディレクトリ内のドットファイルを処理
-for dotfile in .??*; do
+# for dotfile in .??*; do
+cd ~/dotfiles
+find . -maxdepth 1 -name ".*" ! -name "." ! -name ".." | while read -r dotfile; do
     # 無視するファイルをスキップ
-    [[ $dotfile =~ $IGNORE_PATTERN ]] && continue
+    basename_dotfile=$(basename "$dotfile")
+    [[ $basename_dotfile =~ $IGNORE_PATTERN ]] && continue
+
+    echo "$dotfile"
 
     # ディレクトリ構造を維持しながらリンクを作成
-    link_dotfiles "$(pwd)/$dotfile" "$HOME/$dotfile"
+    if [[ $dotfile == ".config" ]]; then
+        echo "dsvdssdvf"
+        for subdir in "$dotfile"/*; do
+            link_dotfiles "$(pwd)/$subdir" "$HOME/$dotfile/$(basename "$subdir")"
+        done
+    else
+        # 通常のドットファイルやディレクトリはそのままリンク
+        link_dotfiles "$(pwd)/$dotfile" "$HOME/$dotfile"
+    fi
 done
 
 echo "Success"
