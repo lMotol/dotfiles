@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # 必要なツールをインストール
-sudo apt-get install -y curl git ripgrep tmux
+sudo apt-get install -y curl git ripgrep tmux fd-find
 
 # tmux plugin manager のインストール
 TARGET_DIR="~/.tmux/plugins/tpm"
