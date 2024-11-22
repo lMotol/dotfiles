@@ -25,7 +25,9 @@ else
     chmod u+x nvim.appimage
     ./nvim.appimage --appimage-extract
     ./squashfs-root/AppRun --version
+    sudo rm -r /squashfs-root
     sudo mv squashfs-root /
+    sudo rm /usr/bin/nvim
     sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
     which nvim
     nvim --version
