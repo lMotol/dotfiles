@@ -32,7 +32,6 @@ else
 	if [ -d "/usr/bin/nvim" ]; then
 		sudo rm -r /usr/bin/nvim
 	fi
-	sudo rm /usr/bin/nvim
 	sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
 	which nvim
 	nvim --version
