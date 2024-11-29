@@ -1,10 +1,10 @@
 #!/bin/bash -e
 
 # 必要なツールをインストール
-sudo apt-get install -y curl git ripgrep tmux fd-find
+sudo apt-get install -y curl git ripgrep build-essential tmux fd-find
 
 # tmux plugin manager のインストール
-TARGET_DIR="~/.tmux/plugins/tpm"
+TARGET_DIR="$HOME/.tmux/plugins/tpm"
 if [ -d "$TARGET_DIR" ]; then
 	if [ -d "$TARGET_DIR/.git" ]; then
 		cd "$TARGET_DIR"
@@ -13,6 +13,7 @@ if [ -d "$TARGET_DIR" ]; then
 		exit 1
 	fi
 else
+	mkdir -p "$HOME/.tmux/plugins/"
 	git clone https://github.com/tmux-plugins/tpm $TARGET_DIR
 fi
 
