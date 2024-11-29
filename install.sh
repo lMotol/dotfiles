@@ -13,9 +13,10 @@ if [ -d "$TARGET_DIR" ]; then
 		exit 1
 	fi
 else
-	mkdir -p "$HOME/.tmux/plugins/"
+	mkdir -p $TARGET_DIR
 	git clone https://github.com/tmux-plugins/tpm $TARGET_DIR
 fi
+run '~/.tmux/plugins/tpm/tpm'
 
 # nvim のインストール
 if command -v nvim >/dev/null 2>&1; then
