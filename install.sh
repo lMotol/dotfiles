@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 # 必要なツールをインストール
-sudo apt-get install -y curl git ripgrep build-essential tmux fd-find
+sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip
 
 # tmux plugin manager のインストール
 TARGET_DIR="$HOME/.tmux/plugins/tpm"
@@ -37,6 +37,38 @@ else
     sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
     which nvim
     nvim --version
+fi
+
+# npm のインストール
+# npm がインストールされているか確認
+if command -v npm &>/dev/null; then
+    echo "npm is already installed (version: $(npm -v))"
+else
+    echo "npm is not installed. Installing..."
+
+    # nvm がインストールされているか確認
+    if command -v nvm &>/dev/null; then
+        echo "Using nvm to install Node.js and npm..."
+        nvm install --lts
+    else
+        # nvm がインストールされていない場合、nvm をインストール
+        echo "nvm is not installed. Installing nvm..."
+
+        # nvm インストールスクリプトを実行
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+        # nvm のインストールが完了した後、シェルを再読み込み
+        echo "nvm has been installed. Please restart your terminal or run 'source ~/.bashrc' (or source ~/.zshrc if you use zsh)."
+
+        # インストール後、nvm を使って Node.js と npm をインストール
+        echo "Using nvm to install Node.js and npm..."
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+        nvm install --lts
+    fi
+
+    echo "npm has been installed. Verifying installation..."
+    npm -v
 fi
 
 # 無視するパターンを定義
