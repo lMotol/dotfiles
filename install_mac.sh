@@ -9,6 +9,16 @@ fi
 # 必要なツールをインストール
 brew install curl git ripgrep tmux fd
 
+# npm のインストール
+brew install nodebrew
+nodebrew setup
+if ! grep -q 'export PATH=\$HOME/.nodebrew/current/bin:\$PATH' ~/.zshrc; then
+	echo 'export PATH=$HOME/.nodebrew/current/bin:$PATH' >>~/.zshrc
+	source ~/.zshrc
+fi
+nodebrew install stable
+npm install -g npm
+
 # tmux plugin manager のインストール
 TARGET_DIR="$HOME/.tmux/plugins/tpm"
 if [ -d "$TARGET_DIR" ]; then
