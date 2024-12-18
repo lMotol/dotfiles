@@ -66,6 +66,7 @@ IGNORE_PATTERN="^\.(git|travis)"
 link_dotfiles() {
     local src=$1
     local dest=$2
+    if [ -d "$src" ]; then
         mkdir -p "$dest" # 必要ならディレクトリを作成
         for file in "$src"/*; do
             link_dotfiles "$file" "$dest/$(basename "$file")"
