@@ -1,0 +1,63 @@
+version: "1.0"
+language: "c"  # C 言語を対象にする
+
+# 静的解析ルール (Lints)
+lints:
+  - id: "unused-variable"
+    description: "Detects unused variables."
+    command: "find-unused-vars"
+    severity: "warning"
+
+  - id: "no-return-in-main"
+    description: "Warns if 'main' function does not return an integer value."
+    command: "check-main-return"
+    severity: "error"
+
+  - id: "undefined-function"
+    description: "Checks for calls to undefined functions."
+    command: "check-undefined-function"
+    severity: "error"
+
+  - id: "no-console-log"
+    description: "Warns about debug prints like printf or puts."
+    command: "check-debug-prints"
+    severity: "warning"
+
+# コード変換ルール (Transformations)
+transformations:
+  - id: "rename-variable"
+    description: "Renames a variable."
+    command: "rename-var"
+    options:
+      old_name: "temp"
+      new_name: "temporary"
+
+  - id: "convert-to-macro"
+    description: "Converts repeated expressions to macros."
+    command: "convert-to-macro"
+    options:
+      expression: "MAX(x, y)"
+      macro_name: "MAX_EXPR"
+
+  - id: "convert-to-const"
+    description: "Converts variables to constants."
+    command: "convert-to-const"
+    options:
+      variable_name: "buffer_size"
+      type: "int"
+
+# 移行タスク (Migrations)
+migrations:
+  - id: "upgrade-to-latest-standard"
+    description: "Updates C code to the latest C standard (e.g., C99 to C11)."
+    command: "upgrade-c-standard"
+    options:
+      target_standard: "C11"
+
+  - id: "replace-deprecated-function"
+    description: "Replaces deprecated functions with newer alternatives."
+    command: "replace-deprecated-func"
+    options:
+      old_function: "strcpy"
+      new_function: "strncpy"
+

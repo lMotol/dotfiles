@@ -4,3 +4,7 @@
 
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
+
+if os.getenv("TMUX") then
+    vim.opt.termguicolors = true
+end
