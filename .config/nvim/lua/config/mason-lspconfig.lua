@@ -2,7 +2,7 @@
 local mason_lspconfig = require("mason-lspconfig")
 
 mason_lspconfig.setup({
-    ensure_installed = { "sumneko_lua", "pyright", "tsserver", "ast_grep" }, -- 必要なLSPサーバーをリストで指定
+    ensure_installed = { "sumneko_lua", "pyright", "tsserver", "ast_grep", "clangd" }, -- 必要なLSPサーバーをリストで指定
     automatic_installation = true, -- 起動時にインストール
 })
 
