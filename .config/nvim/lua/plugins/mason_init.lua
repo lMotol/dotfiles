@@ -10,7 +10,6 @@ return {
                 -- pyright will be automatically installed with mason and loaded with lspconfig
                 pyright = {},
                 ast_grep = {},
-                clangd = {},
             },
         },
     },
@@ -31,7 +30,7 @@ return {
         "williamboman/mason-lspconfig.nvim",
         config = function()
             require("mason-lspconfig").setup({
-                ensure_installed = { "sumneko_lua", "pyright", "tsserver", "ast_grep", "clangd" }, -- 使用するLSPを指定
+                ensure_installed = { "sumneko_lua", "pyright", "tsserver", "ast_grep" }, -- 使用するLSPを指定
                 automatic_installation = true, -- 起動時に自動でインストール
             })
         end,
