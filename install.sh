@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+sudo apt update
+sudo apt upgrade
 sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip
 
 # fzf のインストール
