@@ -5,6 +5,7 @@ sudo apt upgrade
 sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip
 
 # fzf のインストール
+rm -r ~/.fzf
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install
 CURRENT_SHELL=$(basename "$SHELL")
