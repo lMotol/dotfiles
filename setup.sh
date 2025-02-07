@@ -4,6 +4,7 @@ sudo apt update
 sudo apt upgrade
 sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip
 
+INSTALL_DIR="install"
 # install script を実行
 if [ ! -d "$INSTALL_DIR" ]; then
     echo "Error: $INSTALL_DIR ディレクトリが存在しません。"
