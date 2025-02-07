@@ -1,0 +1,11 @@
+services:
+  dotfiles:
+    build: .
+    container_name: dotfiles-env
+    volumes:
+      # ホスト側の dotfiles ディレクトリ（任意）と同期したい場合
+      - ./dotfiles-data:/home/devuser/dotfiles
+    # もし docker-compose 実行時にコマンドを上書きしたい場合は command を指定可能
+    # command: ["/home/devuser/entrypoint.sh"]
+    tty: true
+
