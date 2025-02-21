@@ -1,0 +1,6 @@
+services:
+  dotfiles:
+    build: .
+    container_name: dotfiles-env
+    tty: true
+
