@@ -2,7 +2,7 @@
 
 sudo apt update
 sudo apt upgrade
-sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip
+sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags
 
 INSTALL_DIR="install"
 # install script を実行
