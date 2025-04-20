@@ -7,7 +7,7 @@ if ! command -v brew &>/dev/null; then
 fi
 
 # brew によるインストール
-brew install curl git ripgrep tmux fd neovim sheldon direnv
+brew install curl git ripgrep tmux fd neovim sheldon universal-ctags
 
 # brew 非対応ツールのインストール
 INSTALL_DIR="install_mac"

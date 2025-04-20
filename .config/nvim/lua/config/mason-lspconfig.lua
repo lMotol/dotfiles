@@ -26,7 +26,7 @@ lspconfig.clangd.setup({
         "--clang-tidy",
         "--completion-style=detailed",
         "--header-insertion=never",
-        "--fallback-style=LLVM", -- .clang-formatが存在しない場合のフォールバックスタイル
+        "--fallback-style=Google", -- .clang-formatが存在しない場合のフォールバックスタイル
     },
     on_attach = function(client, bufnr)
         -- 必要に応じてキー設定や他の設定を追加
