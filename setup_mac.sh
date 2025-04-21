@@ -69,4 +69,23 @@ find . -maxdepth 1 -name ".*" ! -name "." ! -name ".." | while read -r dotfile; 
     fi
 done
 
+# Unversal-ctags にパスを通す
+ZSHRC="$HOME/.zshrc"
+LINE='export PATH="$(brew --prefix universal-ctags)/bin:$PATH"'
+
+# ファイルがなければ作成
+if [ ! -f "$ZSHRC" ]; then
+    touch "$ZSHRC"
+fi
+
+# すでに同一行があるかチェック。なければ追記
+if ! grep -Fxq "$LINE" "$ZSHRC"; then
+    echo "" >>"$ZSHRC"
+    echo "# Universal Ctags を優先する" >>"$ZSHRC"
+    echo "$LINE" >>"$ZSHRC"
+    echo "追加しました: $LINE"
+else
+    echo "すでに設定済みです。何も変更しませんでした。"
+fi
+
 echo "Success"
