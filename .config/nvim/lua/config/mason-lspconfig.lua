@@ -28,6 +28,9 @@ lspconfig.clangd.setup({
         "--header-insertion=never",
         "--fallback-style=Google", -- .clang-formatが存在しない場合のフォールバックスタイル
     },
+    init_options = {
+        fallbackFlags = { "-std=c++17", "-x", "c++" },
+    },
     on_attach = function(client, bufnr)
         -- 必要に応じてキー設定や他の設定を追加
 
