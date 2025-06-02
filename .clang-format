@@ -1,22 +1,4 @@
-AlwaysBreakAfterReturnType: None
-BreakBeforeBraces: Attach
-BraceWrapping: {
-  AfterFunction: 'false'
-}
-ColumnLimit: 80
-IndentCaseLabels: false
+BasedOnStyle: Google
+UseTab: Always
 IndentWidth: 4
-MaxEmptyLinesToKeep: 1
-PointerAlignment: Right
-IncludeCategories:
-  - Regex: '.*'
-  - Priority: 1
-SortIncludes: false
-SpaceBeforeAssignmentOperators: true
-SpaceBeforeParens: ControlStatements
-SpaceInEmptyParentheses: false
-SpacesBeforeTrailingComments: 1
-SpacesInCStyleCastParentheses: false
-SpacesInParentheses: false
-SpacesInSquareBrackets: false
 TabWidth: 4
