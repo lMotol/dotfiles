@@ -61,7 +61,7 @@ elif [ "$OS" = "linux" ]; then
         sudo apt upgrade -y
 
         echo "Installing packages via apt..."
-        sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags lazygit
+        sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags
     fi
 fi
 
@@ -135,7 +135,7 @@ if [ "$OS" = "macos" ]; then
             echo ""
             echo "# Universal Ctags"
             echo "$CTAGS_LINE"
-        } >> "$ZSHRC"
+        } >>"$ZSHRC"
         echo "Added universal-ctags to PATH in .zshrc"
     fi
 fi
