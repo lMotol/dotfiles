@@ -1,35 +1,82 @@
 #!/bin/bash -e
+# Unified setup script for dotfiles (Linux/macOS)
 
-sudo apt update
-sudo apt upgrade
-sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags
+DOTFILES_DIR="$HOME/dotfiles"
+INSTALL_DIR="$DOTFILES_DIR/install"
 
-INSTALL_DIR="install"
-# install script を実行
+# OS検出
+OS_TYPE="$(uname -s)"
+case "$OS_TYPE" in
+Darwin*)
+    OS="macos"
+    ;;
+Linux*)
+    OS="linux"
+    ;;
+*)
+    echo "Unsupported OS: $OS_TYPE"
+    exit 1
+    ;;
+esac
+
+echo "==================================="
+echo "Dotfiles Setup Script"
+echo "OS: $OS"
+echo "==================================="
+
+# パッケージのインストール
+if [ "$OS" = "macos" ]; then
+    # Homebrew のインストール
+    if ! command -v brew &>/dev/null; then
+        echo "Installing Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+
+    echo "Installing packages via Homebrew..."
+    brew install curl git ripgrep tmux fd neovim sheldon universal-ctags lazygit
+
+elif [ "$OS" = "linux" ]; then
+    echo "Updating package list..."
+    sudo apt update
+    sudo apt upgrade -y
+
+    echo "Installing packages via apt..."
+    sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags lazygit
+fi
+
+# インストールスクリプトの実行
+echo ""
+echo "Running installation scripts..."
 if [ ! -d "$INSTALL_DIR" ]; then
-    echo "Error: $INSTALL_DIR ディレクトリが存在しません。"
+    echo "Error: $INSTALL_DIR directory does not exist."
     exit 1
 fi
-for script in "$INSTALL_DIR"/*; do
-    if [ -f "$script" ]; then
-        echo "実行中: $script"
-        if [ -x "$script" ]; then
-            "$script"
-        else
-            bash "$script"
-        fi
+
+for script in "$INSTALL_DIR"/*.sh; do
+    if [ -f "$script" ] && [ "$(basename "$script")" != "detect_os.sh" ]; then
+        echo ""
+        echo "Executing: $(basename "$script")"
+        chmod +x "$script"
+        bash "$script" || echo "Warning: $(basename "$script") failed, continuing..."
     fi
 done
 
 # dotfiles のシンボリックリンクを作成
-IGNORE_PATTERN="^\.(git|travis)"
+echo ""
+echo "==================================="
+echo "Creating dotfile symlinks..."
+echo "==================================="
+
+IGNORE_PATTERN="^\.(git|gitmodules)"
 
 link_dotfiles() {
     local src=$1
     local dest=$2
+
     if [ -d "$src" ]; then
-        mkdir -p "$dest" # 必要ならディレクトリを作成
+        mkdir -p "$dest"
         for file in "$src"/*; do
+            [ -e "$file" ] || continue
             link_dotfiles "$file" "$dest/$(basename "$file")"
         done
     else
@@ -37,17 +84,15 @@ link_dotfiles() {
     fi
 }
 
-echo "Creating dotfile links..."
+cd "$DOTFILES_DIR" || exit 1
 
-cd ~/dotfiles
 find . -maxdepth 1 -name ".*" ! -name "." ! -name ".." | while read -r dotfile; do
     basename_dotfile=$(basename "$dotfile")
     [[ $basename_dotfile =~ $IGNORE_PATTERN ]] && continue
 
-    echo "$dotfile"
     if [[ $dotfile == ".config" ]]; then
-        echo "dsvdssdvf"
         for subdir in "$dotfile"/*; do
+            [ -e "$subdir" ] || continue
             link_dotfiles "$(pwd)/$subdir" "$HOME/$dotfile/$(basename "$subdir")"
         done
     else
@@ -55,6 +100,29 @@ find . -maxdepth 1 -name ".*" ! -name "." ! -name ".." | while read -r dotfile; 
     fi
 done
 
-echo "Success"
-echo "シェルの設定ファイルが変更された場合はシェルの再読み込みを行うこと"
-echo "tmux の設定を読み込むために tmux を起動し prefox + I を入力すること"
+# macOS 固有の設定
+if [ "$OS" = "macos" ]; then
+    ZSHRC="$HOME/.zshrc"
+    CTAGS_LINE='export PATH="$(brew --prefix universal-ctags)/bin:$PATH"'
+
+    if [ ! -f "$ZSHRC" ]; then
+        touch "$ZSHRC"
+    fi
+
+    if ! grep -Fxq "$CTAGS_LINE" "$ZSHRC"; then
+        echo "" >>"$ZSHRC"
+        echo "# Universal Ctags" >>"$ZSHRC"
+        echo "$CTAGS_LINE" >>"$ZSHRC"
+        echo "Added universal-ctags to PATH in .zshrc"
+    fi
+fi
+
+echo ""
+echo "==================================="
+echo "Setup Complete!"
+echo "==================================="
+echo ""
+echo "Next steps:"
+echo "  1. Reload your shell: exec \$SHELL -l"
+echo "  2. Start tmux and press 'prefix + I' to install tmux plugins"
+echo ""
