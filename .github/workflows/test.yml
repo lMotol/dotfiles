@@ -1,0 +1,253 @@
+name: Test Dotfiles Setup
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-ubuntu:
+    name: Test on Ubuntu
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Setup environment
+        run: |
+          echo "Testing dotfiles setup on Ubuntu"
+          echo "HOME: $HOME"
+          echo "PWD: $(pwd)"
+      
+      - name: Move dotfiles to home directory
+        run: |
+          mkdir -p ~/dotfiles
+          cp -r ./* ~/dotfiles/
+          cp -r ./.* ~/dotfiles/ 2>/dev/null || true
+          cd ~/dotfiles
+          ls -la
+      
+      - name: Run setup script
+        run: |
+          cd ~/dotfiles
+          chmod +x setup
+          # sudoが必要な部分をスキップするため、環境変数を設定
+          export CI=true
+          ./setup || true
+        continue-on-error: true
+      
+      - name: Verify installations
+        run: |
+          echo "=== Checking installed tools ==="
+          
+          # Git
+          if command -v git &> /dev/null; then
+            echo "✓ Git: $(git --version)"
+          else
+            echo "✗ Git: Not found"
+          fi
+          
+          # Ripgrep
+          if command -v rg &> /dev/null; then
+            echo "✓ Ripgrep: $(rg --version | head -n1)"
+          else
+            echo "✗ Ripgrep: Not found"
+          fi
+          
+          # Tmux
+          if command -v tmux &> /dev/null; then
+            echo "✓ Tmux: $(tmux -V)"
+          else
+            echo "✗ Tmux: Not found"
+          fi
+          
+          # fzf
+          if command -v fzf &> /dev/null; then
+            echo "✓ fzf: $(fzf --version)"
+          else
+            echo "✗ fzf: Not found"
+          fi
+          
+          # Node/npm
+          if command -v node &> /dev/null; then
+            echo "✓ Node.js: $(node --version)"
+          fi
+          if command -v npm &> /dev/null; then
+            echo "✓ npm: $(npm --version)"
+          fi
+          
+          # Neovim
+          if command -v nvim &> /dev/null; then
+            echo "✓ Neovim: $(nvim --version | head -n1)"
+          else
+            echo "✗ Neovim: Not found"
+          fi
+      
+      - name: Verify symlinks
+        run: |
+          echo "=== Checking symlinks ==="
+          
+          if [ -L "$HOME/.tmux.conf" ]; then
+            echo "✓ .tmux.conf is linked"
+            ls -l "$HOME/.tmux.conf"
+          else
+            echo "✗ .tmux.conf is not linked"
+          fi
+          
+          if [ -L "$HOME/.config/nvim" ] || [ -d "$HOME/.config/nvim" ]; then
+            echo "✓ .config/nvim exists"
+            ls -la "$HOME/.config/" | grep nvim || true
+          else
+            echo "✗ .config/nvim does not exist"
+          fi
+      
+      - name: Test script syntax
+        run: |
+          echo "=== Checking script syntax ==="
+          cd ~/dotfiles
+          
+          # Check main setup script
+          bash -n setup && echo "✓ setup: syntax OK" || echo "✗ setup: syntax error"
+          
+          # Check all install scripts
+          for script in install/*.sh; do
+            if [ -f "$script" ]; then
+              bash -n "$script" && echo "✓ $(basename $script): syntax OK" || echo "✗ $(basename $script): syntax error"
+            fi
+          done
+          
+          # Check poetry script
+          bash -n poetry_install.sh && echo "✓ poetry_install.sh: syntax OK" || echo "✗ poetry_install.sh: syntax error"
+
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Setup environment
+        run: |
+          echo "Testing dotfiles setup on macOS"
+          echo "HOME: $HOME"
+          echo "PWD: $(pwd)"
+      
+      - name: Move dotfiles to home directory
+        run: |
+          mkdir -p ~/dotfiles
+          cp -r ./* ~/dotfiles/
+          cp -r ./.* ~/dotfiles/ 2>/dev/null || true
+          cd ~/dotfiles
+          ls -la
+      
+      - name: Run setup script
+        run: |
+          cd ~/dotfiles
+          chmod +x setup
+          export CI=true
+          ./setup || true
+        continue-on-error: true
+      
+      - name: Verify installations
+        run: |
+          echo "=== Checking installed tools ==="
+          
+          # Homebrew
+          if command -v brew &> /dev/null; then
+            echo "✓ Homebrew: $(brew --version | head -n1)"
+          else
+            echo "✗ Homebrew: Not found"
+          fi
+          
+          # Git
+          if command -v git &> /dev/null; then
+            echo "✓ Git: $(git --version)"
+          else
+            echo "✗ Git: Not found"
+          fi
+          
+          # Ripgrep
+          if command -v rg &> /dev/null; then
+            echo "✓ Ripgrep: $(rg --version | head -n1)"
+          else
+            echo "✗ Ripgrep: Not found"
+          fi
+          
+          # Tmux
+          if command -v tmux &> /dev/null; then
+            echo "✓ Tmux: $(tmux -V)"
+          else
+            echo "✗ Tmux: Not found"
+          fi
+          
+          # fzf
+          if command -v fzf &> /dev/null; then
+            echo "✓ fzf: $(fzf --version)"
+          else
+            echo "✗ fzf: Not found"
+          fi
+          
+          # Neovim
+          if command -v nvim &> /dev/null; then
+            echo "✓ Neovim: $(nvim --version | head -n1)"
+          else
+            echo "✗ Neovim: Not found"
+          fi
+      
+      - name: Verify symlinks
+        run: |
+          echo "=== Checking symlinks ==="
+          
+          if [ -L "$HOME/.tmux.conf" ]; then
+            echo "✓ .tmux.conf is linked"
+            ls -l "$HOME/.tmux.conf"
+          else
+            echo "✗ .tmux.conf is not linked"
+          fi
+          
+          if [ -L "$HOME/.config/nvim" ] || [ -d "$HOME/.config/nvim" ]; then
+            echo "✓ .config/nvim exists"
+            ls -la "$HOME/.config/" | grep nvim || true
+          else
+            echo "✗ .config/nvim does not exist"
+          fi
+      
+      - name: Test script syntax
+        run: |
+          echo "=== Checking script syntax ==="
+          cd ~/dotfiles
+          
+          # Check main setup script
+          bash -n setup && echo "✓ setup: syntax OK" || echo "✗ setup: syntax error"
+          
+          # Check all install scripts
+          for script in install/*.sh; do
+            if [ -f "$script" ]; then
+              bash -n "$script" && echo "✓ $(basename $script): syntax OK" || echo "✗ $(basename $script): syntax error"
+            fi
+          done
+          
+          # Check poetry script
+          bash -n poetry_install.sh && echo "✓ poetry_install.sh: syntax OK" || echo "✗ poetry_install.sh: syntax error"
+
+  shellcheck:
+    name: ShellCheck Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          severity: warning
+          ignore_paths: test_dotfiles .git

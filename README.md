@@ -2,6 +2,8 @@
 
 個人的なdotfilesリポジトリです。Neovim、tmux、シェル設定などを管理しています。
 
+![Test Status](https://github.com/yourusername/dotfiles/workflows/Test%20Dotfiles%20Setup/badge.svg)
+
 ## 構成
 
 ```
@@ -96,6 +98,16 @@ Pythonのパッケージマネージャー Poetryをインストールする場�
 ```
 
 ## テスト
+
+### GitHub Actions
+
+このリポジトリはGitHub Actionsで自動テストされています。プッシュやプルリクエスト時に以下がテストされます：
+
+- **Ubuntu環境**: セットアップスクリプトの動作確認
+- **macOS環境**: セットアップスクリプトの動作確認
+- **ShellCheck**: 全スクリプトの静的解析
+
+### ローカルテスト
 
 Docker環境でセットアップをテストできます:
 

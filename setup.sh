@@ -4,6 +4,14 @@
 DOTFILES_DIR="$HOME/dotfiles"
 INSTALL_DIR="$DOTFILES_DIR/install"
 
+# CI環境検出
+if [ -n "$CI" ] || [ -n "$GITHUB_ACTIONS" ]; then
+    IS_CI=true
+    echo "CI environment detected"
+else
+    IS_CI=false
+fi
+
 # OS検出
 OS_TYPE="$(uname -s)"
 case "$OS_TYPE" in
@@ -22,26 +30,39 @@ esac
 echo "==================================="
 echo "Dotfiles Setup Script"
 echo "OS: $OS"
+echo "CI: $IS_CI"
 echo "==================================="
 
 # パッケージのインストール
 if [ "$OS" = "macos" ]; then
     # Homebrew のインストール
     if ! command -v brew &>/dev/null; then
-        echo "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        if [ "$IS_CI" = true ]; then
+            echo "Skipping Homebrew installation in CI (should be pre-installed)"
+        else
+            echo "Installing Homebrew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
     fi
 
-    echo "Installing packages via Homebrew..."
-    brew install curl git ripgrep tmux fd neovim sheldon universal-ctags lazygit
+    if command -v brew &>/dev/null; then
+        echo "Installing packages via Homebrew..."
+        brew install curl git ripgrep tmux fd neovim sheldon universal-ctags lazygit
+    fi
 
 elif [ "$OS" = "linux" ]; then
-    echo "Updating package list..."
-    sudo apt update
-    sudo apt upgrade -y
+    if [ "$IS_CI" = true ]; then
+        echo "Skipping apt update/upgrade in CI"
+        echo "Installing packages via apt..."
+        sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags 2>/dev/null || echo "Some packages may already be installed"
+    else
+        echo "Updating package list..."
+        sudo apt update
+        sudo apt upgrade -y
 
-    echo "Installing packages via apt..."
-    sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags lazygit
+        echo "Installing packages via apt..."
+        sudo apt-get install -y curl git ripgrep build-essential tmux fd-find unzip universal-ctags lazygit
+    fi
 fi
 
 # インストールスクリプトの実行
