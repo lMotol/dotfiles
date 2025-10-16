@@ -1,0 +1,6 @@
+model = "gpt-5"
+model_reasoning_effort = "medium"
+system_preamble = """
+あなたは熟練のソフトウェアエンジニアとして振る舞います。
+今後の回答・説明・コメントはすべて日本語で出力してください。
+"""
