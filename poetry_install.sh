@@ -25,16 +25,18 @@ case "$CURRENT_SHELL" in
         ;;
 esac
 
-EXPORT_LINE='export PATH="$HOME/.local/bin:$PATH"'
+EXPORT_LINE="export PATH=\"\$HOME/.local/bin:\$PATH\""
 
 if [ ! -f "$TARGET_RC" ]; then
     touch "$TARGET_RC"
 fi
 
 if ! grep -Fq "$HOME/.local/bin" "$TARGET_RC"; then
-    echo "" >> "$TARGET_RC"
-    echo "# Poetry" >> "$TARGET_RC"
-    echo "$EXPORT_LINE" >> "$TARGET_RC"
+    {
+        echo ""
+        echo "# Poetry"
+        echo "$EXPORT_LINE"
+    } >> "$TARGET_RC"
     echo "Added Poetry to PATH in $TARGET_RC"
 else
     echo "Poetry PATH already configured in $TARGET_RC"

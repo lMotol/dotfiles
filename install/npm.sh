@@ -15,6 +15,7 @@ if ! command -v nvm &>/dev/null; then
     
     # nvmを現在のシェルセッションで利用可能にする
     export NVM_DIR="$HOME/.nvm"
+    # shellcheck source=/dev/null
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     
     echo "nvm has been installed."

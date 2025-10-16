@@ -6,7 +6,7 @@ TARGET_DIR="$HOME/.tmux/plugins/tpm"
 if [ -d "$TARGET_DIR" ]; then
     if [ -d "$TARGET_DIR/.git" ]; then
         echo "Updating tpm..."
-        cd "$TARGET_DIR"
+        cd "$TARGET_DIR" || exit 1
         git pull origin master
     else
         echo "Error: $TARGET_DIR exists but is not a git repository"

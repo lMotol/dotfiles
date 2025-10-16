@@ -124,16 +124,18 @@ done
 # macOS 固有の設定
 if [ "$OS" = "macos" ]; then
     ZSHRC="$HOME/.zshrc"
-    CTAGS_LINE='export PATH="$(brew --prefix universal-ctags)/bin:$PATH"'
+    CTAGS_LINE="export PATH=\"\$(brew --prefix universal-ctags)/bin:\$PATH\""
 
     if [ ! -f "$ZSHRC" ]; then
         touch "$ZSHRC"
     fi
 
     if ! grep -Fxq "$CTAGS_LINE" "$ZSHRC"; then
-        echo "" >>"$ZSHRC"
-        echo "# Universal Ctags" >>"$ZSHRC"
-        echo "$CTAGS_LINE" >>"$ZSHRC"
+        {
+            echo ""
+            echo "# Universal Ctags"
+            echo "$CTAGS_LINE"
+        } >> "$ZSHRC"
         echo "Added universal-ctags to PATH in .zshrc"
     fi
 fi
