@@ -47,7 +47,7 @@ if [ "$OS" = "macos" ]; then
 
     if command -v brew &>/dev/null; then
         echo "Installing packages via Homebrew..."
-        brew install curl git ripgrep tmux fd neovim sheldon universal-ctags lazygit
+        brew install curl git ripgrep tmux fd neovim sheldon universal-ctags lazygit hammerspoon
     fi
 
 elif [ "$OS" = "linux" ]; then
