@@ -1,0 +1,11 @@
+keybinding:
+  files:
+    discardChanges: "D"
+customCommands:
+  - key: "d"
+    context: "files"
+    description: "Delta diff (scrollable, stable layout)"
+    command: >
+      bash -lc 'DELTA_PAGER="less -R" git diff --color=always -- "{{.SelectedFile.Name}}" | delta'
+
+    output: terminal

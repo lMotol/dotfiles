@@ -1,0 +1,23 @@
+[color]
+    ui = true
+
+[core]
+    pager = delta
+    editor = nvim
+
+[user]
+    name = lMotol
+    email = motomasa_s@sslab.ics.keio.ac.jp
+
+[pager]
+    diff = delta
+    show = delta
+    log  = delta
+
+[delta]
+    side-by-side = true
+    line-numbers = true
+    navigate = true
+    file-style = omit
+    hunk-header-style = omit
+    keep-plus-minus-markers = false
