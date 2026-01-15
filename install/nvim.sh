@@ -20,13 +20,15 @@ cd "$HOME" || exit 1
 case "$arch" in
     x86_64|i386|i686)
         echo "Installing Neovim for x86_64..."
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-        tar xzf nvim-linux64.tar.gz
-        rm nvim-linux64.tar.gz
+        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+	chmod u+x nvim-linux-x86_64.appimage
+	./nvim-linux-x86_64.appimage --appimage-extract
+        rm nvim-linux-x86_64.appimage
+	
+        sudo rm -rf /squashfs-root
+	sudo mv squashfs-root /
+	sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
         
-        sudo rm -rf /opt/nvim
-        sudo mv nvim-linux64 /opt/nvim
-        sudo ln -sf /opt/nvim/bin/nvim /usr/bin/nvim
         ;;
     aarch64|armv7l|arm64)
         echo "Installing Neovim for ARM64..."
