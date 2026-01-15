@@ -94,6 +94,11 @@ link_dotfiles() {
     local src=$1
     local dest=$2
 
+    if [ "$(basename "$src")" = ".config" ]; then
+        ln -snfv "$src" "$dest"
+        return
+    fi
+
     if [ -d "$src" ]; then
         mkdir -p "$dest"
         for file in "$src"/*; do
@@ -112,10 +117,7 @@ find . -maxdepth 1 -name ".*" ! -name "." ! -name ".." | while read -r dotfile; 
     [[ $basename_dotfile =~ $IGNORE_PATTERN ]] && continue
 
     if [[ $dotfile == ".config" ]]; then
-        for subdir in "$dotfile"/*; do
-            [ -e "$subdir" ] || continue
-            link_dotfiles "$(pwd)/$subdir" "$HOME/$dotfile/$(basename "$subdir")"
-        done
+        ln -snfv "$(pwd)/$dotfile" "$HOME/$dotfile"
     else
         link_dotfiles "$(pwd)/$dotfile" "$HOME/$dotfile"
     fi
