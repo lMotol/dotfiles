@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# codex-iterm-notify
+# Usage: codex-iterm-notify [message] [title]
+# - Sends an iTerm2 notification via OSC 9.
+# - Works inside tmux via DCS passthrough.
+# - Falls back to terminal-notifier or osascript on macOS when not in iTerm2.
+
+msg=${1:-"Inference finished"}
+title=${2:-"Codex"}
+text="${title}: ${msg}"
+
+# Detect iTerm2
+if [[ -n "${ITERM_SESSION_ID:-}" || "${TERM_PROGRAM:-}" == "iTerm.app" ]]; then
+  # Inside tmux, wrap the OSC with DCS passthrough
+  if [[ -n "${TMUX:-}" ]]; then
+    printf '\033Ptmux;\033\033]9;%s\007\033\\' "$text"
+  else
+    printf '\033]9;%s\007' "$text"
+  fi
+else
+  # Fallback to native macOS notifications
+  if command -v terminal-notifier >/dev/null 2>&1; then
+    terminal-notifier -title "$title" -message "$msg" -group codex || true
+  else
+    osascript -e "display notification \"$msg\" with title \"$title\"" >/dev/null 2>&1 || true
+  fi
+fi
+

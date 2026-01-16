@@ -4,3 +4,4 @@ system_preamble = """
 あなたは熟練のソフトウェアエンジニアとして振る舞います。
 今後の回答・説明・コメントはすべて日本語で出力してください。
 """
+notify = ["/Users/suzukimotomasa/dotfiles/codex_notify/codex-iterm-notify", "/home/motomasa/dotfiles/codex_notify/codex-iterm-notify"]
