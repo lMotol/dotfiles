@@ -1,10 +1,3 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "theme": "tokyonight",
-  "keybinds": {
-    "messages_line_up": "alt+k",
-    "messages_line_down": "alt+j",
-    "messages_half_page_up": "alt+p",
-    "messages_half_page_down": "alt+n"
-  }
+  "$schema": "https://opencode.ai/config.json"
 }

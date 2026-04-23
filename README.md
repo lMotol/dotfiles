@@ -136,6 +136,11 @@ cd ~/dotfiles
 
 tmux内で `prefix + I` を押してください（デフォルトのprefixは `Ctrl+b`）。
 
+### TODO
+- .bashrc や .zshrc を一元管理する
+- ctrl+x, ctrl+e でコマンドを nvim でコマンドを修正できるようにしたい
+    - 環境変数 `export EDITOR=nvim`, `export VISUAL=nvim` などを設定しておく必要がある
+
 ## ライセンス
 
 MIT
