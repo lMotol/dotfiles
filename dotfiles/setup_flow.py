@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .context import AppContext
+from .context import Settings
 from .installers import SETUP_INSTALLERS, install_system_packages, run_installer
 from .shell import CommandRunner
 
@@ -68,7 +68,7 @@ def link_dotfiles(source: Path, destination: Path) -> None:
     symlink_path(source, destination)
 
 
-def create_dotfile_links(context: AppContext, runner: CommandRunner) -> None:
+def create_dotfile_links(context: Settings, runner: CommandRunner) -> None:
     runner.log("")
     runner.log("===================================")
     runner.log("Creating dotfile symlinks...")
@@ -83,7 +83,7 @@ def create_dotfile_links(context: AppContext, runner: CommandRunner) -> None:
         link_dotfiles(dotfile, context.home / dotfile.name)
 
 
-def run_setup(context: AppContext, runner: CommandRunner) -> int:
+def run_setup(context: Settings, runner: CommandRunner) -> int:
     if context.os_name == "unknown":
         raise RuntimeError("Unsupported OS")
 

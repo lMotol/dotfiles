@@ -1,60 +1,76 @@
 from __future__ import annotations
 
-import os
-from argparse import Namespace
-from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
+
+from pydantic import BaseSettings, Field, validator
 
 
-def truthy(value: str | None) -> bool:
-    return value is not None and value.lower() in {"1", "true", "yes"}
+class Settings(BaseSettings):
+    """Application settings and runtime context.
 
+    This uses Pydantic's BaseSettings so values can be provided via environment
+    variables and validated automatically. It's intentionally small and mirrors
+    the previous AppContext shape.
+    """
 
-def detect_os_name() -> str:
-    platform = os.uname().sysname
-    if platform == "Darwin":
-        return "macos"
-    if platform == "Linux":
-        return "linux"
-    return "unknown"
-
-
-def detect_arch() -> str:
-    return os.uname().machine
-
-
-def in_ci() -> bool:
-    return truthy(os.environ.get("CI")) or truthy(os.environ.get("GITHUB_ACTIONS"))
-
-
-@dataclass(frozen=True)
-class AppContext:
     root: Path
-    home: Path
-    os_name: str
-    arch: str
-    ci: bool
-    skip_system_packages: bool
-    strict_install_scripts: bool
+    home: Path = Field(default_factory=lambda: Path("~").expanduser().resolve())
+    os_name: Optional[str] = None
+    arch: Optional[str] = None
+    ci: bool = False
+    skip_system_packages: bool = False
+    strict_install_scripts: bool = False
 
-    @classmethod
-    def from_args(cls, args: Namespace, root: Path) -> "AppContext":
-        home = Path(os.environ.get("HOME", str(Path.home()))).expanduser().resolve()
-        os_name = getattr(args, "os_name", None) or detect_os_name()
-        ci = getattr(args, "ci", False) or in_ci()
-        skip_system_packages = getattr(args, "skip_system_packages", False) or truthy(
-            os.environ.get("SETUP_SKIP_SYSTEM_PACKAGES")
-        )
-        strict_install_scripts = getattr(args, "strict_install_scripts", False) or truthy(
-            os.environ.get("SETUP_STRICT_INSTALL_SCRIPTS")
-        )
+    class Config:
+        env_prefix = ""
+        arbitrary_types_allowed = True
 
-        return cls(
-            root=root,
-            home=home,
-            os_name=os_name,
-            arch=detect_arch(),
-            ci=ci,
-            skip_system_packages=skip_system_packages,
-            strict_install_scripts=strict_install_scripts,
-        )
+    @validator("os_name", pre=True, always=True)
+    def _detect_os(cls, v):
+        if v:
+            return v
+        try:
+            platform = __import__("os").uname().sysname
+        except Exception:
+            return "unknown"
+        if platform == "Darwin":
+            return "macos"
+        if platform == "Linux":
+            return "linux"
+        return "unknown"
+
+    @validator("arch", pre=True, always=True)
+    def _detect_arch(cls, v):
+        if v:
+            return v
+        try:
+            return __import__("os").uname().machine
+        except Exception:
+            return "unknown"
+
+    @validator("ci", pre=True, always=True)
+    def _detect_ci(cls, v):
+        if v:
+            return True
+        env = __import__("os").environ
+        ci_val = env.get("CI") or env.get("GITHUB_ACTIONS")
+        if isinstance(ci_val, str) and ci_val.lower() in {"1", "true", "yes"}:
+            return True
+        return False
+
+
+def build_settings_from_args(args: object, root: Path) -> Settings:
+    """Create Settings from CLI args and environment.
+
+    This keeps the CLI surface small: Typer will populate an object with the
+    same attributes we used before and this function folds them into Pydantic.
+    """
+    # pick values from args if present, otherwise let Settings detect from env
+    data = {"root": root}
+    for key in ("home", "os_name", "arch", "ci", "skip_system_packages", "strict_install_scripts"):
+        if hasattr(args, key):
+            val = getattr(args, key)
+            if val is not None:
+                data[key] = val
+    return Settings(**data)

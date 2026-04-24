@@ -1,63 +1,107 @@
 from __future__ import annotations
 
-import argparse
 import subprocess
 from pathlib import Path
 from typing import Sequence
 
-from .context import AppContext
+import typer
+from rich.console import Console
+
+from .context import build_settings_from_args, Settings
 from .installers import INSTALLER_FUNCTIONS, run_installer
 from .setup_flow import run_setup
 from .shell import CommandRunner
 
 ROOT = Path(__file__).resolve().parents[1]
 
-
-def add_common_flags(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--os", dest="os_name", choices=["linux", "macos"], help="override detected OS")
-    parser.add_argument("--ci", action="store_true", help="force CI mode")
-    parser.add_argument("--skip-system-packages", action="store_true", help="skip apt/brew package installation")
-    parser.add_argument("--strict-install-scripts", action="store_true", help="fail fast when an installer fails")
+app = typer.Typer(help="dotfiles management CLI")
+console = Console()
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="dotfiles management CLI")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+def _make_runner() -> CommandRunner:
+    # central place to create the command runner; keep it lightweight
+    return CommandRunner()
 
-    detect_parser = subparsers.add_parser("detect-os", help="print detected OS")
-    add_common_flags(detect_parser)
 
-    install_parser = subparsers.add_parser("install", help="run a single installer")
-    install_parser.add_argument("target", choices=sorted(INSTALLER_FUNCTIONS))
-    add_common_flags(install_parser)
+@app.command()
+def detect_os(
+    os: str | None = typer.Option(None, "--os", "-o", help="override detected OS", show_default=False),
+    ci: bool = typer.Option(False, "--ci", help="force CI mode"),
+    skip_system_packages: bool = typer.Option(False, "--skip-system-packages", help="skip apt/brew package installation"),
+    strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
+):
+    """Print detected OS"""
+    # Typer builds a simple object; convert into Settings for validation
+    args = typer.Context(app)  # dummy context for attribute access
+    class _A: pass
+    a = _A()
+    a.os_name = os
+    a.ci = ci
+    a.skip_system_packages = skip_system_packages
+    a.strict_install_scripts = strict_install_scripts
+    settings = build_settings_from_args(a, ROOT)
+    console.print(settings.os_name)
 
-    setup_parser = subparsers.add_parser("setup", help="run full setup")
-    add_common_flags(setup_parser)
 
-    return parser
+@app.command()
+def install(
+    target: str = typer.Argument(..., help="installer target", autocompletion=lambda: sorted(INSTALLER_FUNCTIONS)),
+    os: str | None = typer.Option(None, "--os", "-o", help="override detected OS", show_default=False),
+    ci: bool = typer.Option(False, "--ci", help="force CI mode"),
+    skip_system_packages: bool = typer.Option(False, "--skip-system-packages", help="skip apt/brew package installation"),
+    strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
+):
+    """Run a single installer"""
+    a = type("_A", (), {})()
+    a.os_name = os
+    a.ci = ci
+    a.skip_system_packages = skip_system_packages
+    a.strict_install_scripts = strict_install_scripts
+    settings = build_settings_from_args(a, ROOT)
+    runner = _make_runner()
+    try:
+        run_installer(target, settings, runner)
+    except RuntimeError as exc:
+        console.print(f"[red]Error:[/red] {exc}")
+        raise typer.Exit(code=1)
+    except subprocess.CalledProcessError as exc:
+        console.print(f"[red]Command failed with exit code {exc.returncode}[/red]")
+        raise typer.Exit(code=exc.returncode)
+
+
+@app.command()
+def setup(
+    os: str | None = typer.Option(None, "--os", "-o", help="override detected OS", show_default=False),
+    ci: bool = typer.Option(False, "--ci", help="force CI mode"),
+    skip_system_packages: bool = typer.Option(False, "--skip-system-packages", help="skip apt/brew package installation"),
+    strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
+):
+    """Run full setup"""
+    a = type("_A", (), {})()
+    a.os_name = os
+    a.ci = ci
+    a.skip_system_packages = skip_system_packages
+    a.strict_install_scripts = strict_install_scripts
+    settings = build_settings_from_args(a, ROOT)
+    runner = _make_runner()
+    try:
+        result = run_setup(settings, runner)
+        raise typer.Exit(code=int(result))
+    except RuntimeError as exc:
+        console.print(f"[red]Error:[/red] {exc}")
+        raise typer.Exit(code=1)
+    except subprocess.CalledProcessError as exc:
+        console.print(f"[red]Command failed with exit code {exc.returncode}[/red]")
+        raise typer.Exit(code=exc.returncode)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    context = AppContext.from_args(args, ROOT)
-    runner = CommandRunner()
+    """Compatibility wrapper that preserves the previous main signature.
 
+    Returns an exit code so existing entrypoints keep working.
+    """
     try:
-        if args.command == "detect-os":
-            print(context.os_name)
-            return 0
-        if args.command == "install":
-            run_installer(args.target, context, runner)
-            return 0
-        if args.command == "setup":
-            return int(run_setup(context, runner))
-    except RuntimeError as exc:
-        runner.log(f"Error: {exc}")
-        return 1
-    except subprocess.CalledProcessError as exc:
-        runner.log(f"Command failed with exit code {exc.returncode}: {runner.quote_command(exc.cmd if isinstance(exc.cmd, Sequence) else [str(exc.cmd)])}")
-        return exc.returncode
-
-    parser.error(f"Unknown command: {args.command}")
-    return 2
+        app(argv)
+        return 0
+    except typer.Exit as e:
+        return e.exit_code or 0

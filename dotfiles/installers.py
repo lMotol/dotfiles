@@ -6,7 +6,7 @@ import tempfile
 from collections.abc import Callable
 from pathlib import Path
 
-from .context import AppContext
+from .context import Settings
 from .shell import CommandRunner
 
 BREW_PACKAGES = [
@@ -36,7 +36,7 @@ APT_PACKAGES = [
 SETUP_INSTALLERS = ("codex", "fzf", "lazygit", "npm", "nvim", "tpm")
 
 
-def install_system_packages(context: AppContext, runner: CommandRunner) -> None:
+def install_system_packages(context: Settings, runner: CommandRunner) -> None:
     if context.skip_system_packages:
         value = os.environ.get("SETUP_SKIP_SYSTEM_PACKAGES", "0")
         runner.log(f"Skipping system package installation (SETUP_SKIP_SYSTEM_PACKAGES={value})")
@@ -70,7 +70,7 @@ def install_system_packages(context: AppContext, runner: CommandRunner) -> None:
     raise RuntimeError(f"Unsupported OS: {context.os_name}")
 
 
-def install_codex(context: AppContext, runner: CommandRunner) -> None:
+def install_codex(context: Settings, runner: CommandRunner) -> None:
     del context
     if runner.command_exists("codex"):
         runner.log(f"Codex CLI is already installed ({runner.command_first_line(['codex', '--version'])})")
@@ -88,7 +88,7 @@ def install_codex(context: AppContext, runner: CommandRunner) -> None:
         runner.log("Installation completed. Please reload your shell.")
 
 
-def install_fzf(context: AppContext, runner: CommandRunner) -> None:
+def install_fzf(context: Settings, runner: CommandRunner) -> None:
     fzf_dir = context.home / ".fzf"
     if fzf_dir.exists():
         if (fzf_dir / ".git").is_dir():
@@ -104,7 +104,7 @@ def install_fzf(context: AppContext, runner: CommandRunner) -> None:
     runner.log("fzf installation complete!")
 
 
-def install_lazygit(context: AppContext, runner: CommandRunner) -> None:
+def install_lazygit(context: Settings, runner: CommandRunner) -> None:
     if context.os_name == "macos":
         runner.log("macOS detected. lazygit should be installed via Homebrew.")
         return
@@ -138,7 +138,7 @@ def install_lazygit(context: AppContext, runner: CommandRunner) -> None:
     runner.log(runner.command_first_line(["lazygit", "--version"]))
 
 
-def install_npm(context: AppContext, runner: CommandRunner) -> None:
+def install_npm(context: Settings, runner: CommandRunner) -> None:
     if runner.command_exists("npm"):
         runner.log(f"npm is already installed (version: {runner.command_first_line(['npm', '-v'])})")
         return
@@ -164,7 +164,7 @@ def install_npm(context: AppContext, runner: CommandRunner) -> None:
     runner.log("npm has been installed successfully!")
 
 
-def install_nvim(context: AppContext, runner: CommandRunner) -> None:
+def install_nvim(context: Settings, runner: CommandRunner) -> None:
     if context.os_name == "macos":
         runner.log("macOS detected. Neovim should be installed via Homebrew.")
         return
@@ -194,7 +194,7 @@ def install_nvim(context: AppContext, runner: CommandRunner) -> None:
     runner.log(runner.command_first_line(["nvim", "--version"]))
 
 
-def install_poetry(context: AppContext, runner: CommandRunner) -> None:
+def install_poetry(context: Settings, runner: CommandRunner) -> None:
     poetry_bin = context.home / ".local/bin/poetry"
     if runner.command_exists("poetry"):
         runner.log(f"Poetry is already installed ({runner.command_first_line(['poetry', '--version'])})")
@@ -212,7 +212,7 @@ def install_poetry(context: AppContext, runner: CommandRunner) -> None:
     runner.log("Please reload your shell: exec $SHELL -l")
 
 
-def install_tpm(context: AppContext, runner: CommandRunner) -> None:
+def install_tpm(context: Settings, runner: CommandRunner) -> None:
     target_dir = context.home / ".tmux/plugins/tpm"
     if target_dir.exists():
         if (target_dir / ".git").is_dir():
@@ -228,7 +228,7 @@ def install_tpm(context: AppContext, runner: CommandRunner) -> None:
     runner.log("tpm installation complete!")
 
 
-INSTALLER_FUNCTIONS: dict[str, Callable[[AppContext, CommandRunner], None]] = {
+INSTALLER_FUNCTIONS: dict[str, Callable[[Settings, CommandRunner], None]] = {
     "codex": install_codex,
     "fzf": install_fzf,
     "lazygit": install_lazygit,
@@ -239,7 +239,7 @@ INSTALLER_FUNCTIONS: dict[str, Callable[[AppContext, CommandRunner], None]] = {
 }
 
 
-def run_installer(target: str, context: AppContext, runner: CommandRunner) -> None:
+def run_installer(target: str, context: Settings, runner: CommandRunner) -> None:
     try:
         installer = INSTALLER_FUNCTIONS[target]
     except KeyError as exc:
