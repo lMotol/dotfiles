@@ -46,6 +46,15 @@ case "${SETUP_SKIP_SYSTEM_PACKAGES:-0}" in
         ;;
 esac
 
+case "${SETUP_STRICT_INSTALL_SCRIPTS:-0}" in
+    1 | true | TRUE | yes | YES)
+        STRICT_INSTALL_SCRIPTS=true
+        ;;
+    *)
+        STRICT_INSTALL_SCRIPTS=false
+        ;;
+esac
+
 ensure_managed_source() {
     local shell_rc=$1
     local block_name=$2
@@ -130,7 +139,11 @@ for script in "$INSTALL_DIR"/*.sh; do
     if [ -f "$script" ] && [ "$(basename "$script")" != "detect_os.sh" ]; then
         echo ""
         echo "Executing: $(basename "$script")"
-        bash "$script" || echo "Warning: $(basename "$script") failed, continuing..."
+        if [ "$STRICT_INSTALL_SCRIPTS" = true ]; then
+            bash "$script"
+        else
+            bash "$script" || echo "Warning: $(basename "$script") failed, continuing..."
+        fi
     fi
 done
 

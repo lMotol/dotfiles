@@ -42,6 +42,7 @@ VERIFY_SCRIPT="$REPO_DIR/test_dotfiles/verify_setup.sh"
 export PATH="$FAKE_BIN_DIR:$PATH"
 export CI=true
 export SETUP_SKIP_SYSTEM_PACKAGES=1
+export SETUP_STRICT_INSTALL_SCRIPTS=1
 unset EDITOR VISUAL GIT_EDITOR FCEDIT NVM_DIR
 
 bash -n "$REPO_DIR/setup"
@@ -55,4 +56,4 @@ else
     bash "$VERIFY_SCRIPT" "$REPO_DIR"
 fi
 
-printf 'Linux setup smoke test completed successfully.\n'
+printf 'Setup smoke test completed successfully.\n'
