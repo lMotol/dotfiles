@@ -103,6 +103,9 @@ assert_command_output \
     bash -lc 'printf "%s|%s|%s|%s|%s" "$EDITOR" "$VISUAL" "$GIT_EDITOR" "$FCEDIT" "$NVM_DIR"'
 
 assert_contains "$HOME/.config/shell/zshrc" "bindkey '^X^E' edit-command-line"
-assert_command_output "\"^X^E\" edit-command-line" zsh -ic 'bindkey "^X^E"'
+
+if command -v zsh >/dev/null 2>&1; then
+    assert_command_output "\"^X^E\" edit-command-line" zsh -ic 'bindkey "^X^E"'
+fi
 
 printf 'Verified setup outputs in %s\n' "$HOME"

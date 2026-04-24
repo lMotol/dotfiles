@@ -31,9 +31,11 @@ def detect_os(
     strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
 ):
     """Print detected OS"""
-    # Typer builds a simple object; convert into Settings for validation
-    args = typer.Context(app)  # dummy context for attribute access
-    class _A: pass
+    # Typer gives us plain values here; wrap them in the same lightweight
+    # object shape the rest of the CLI uses before handing off to Settings.
+    class _A:
+        pass
+
     a = _A()
     a.os_name = os
     a.ci = ci
@@ -101,7 +103,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     Returns an exit code so existing entrypoints keep working.
     """
     try:
-        app(argv)
+        app(args=list(argv) if argv is not None else None, standalone_mode=False)
         return 0
     except typer.Exit as e:
         return e.exit_code or 0

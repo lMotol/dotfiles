@@ -18,9 +18,9 @@ class Settings(BaseSettings):
     home: Path = Field(default_factory=lambda: Path("~").expanduser().resolve())
     os_name: Optional[str] = None
     arch: Optional[str] = None
-    ci: bool = False
-    skip_system_packages: bool = False
-    strict_install_scripts: bool = False
+    ci: bool = Field(False, env=("CI", "GITHUB_ACTIONS"))
+    skip_system_packages: bool = Field(False, env=("SKIP_SYSTEM_PACKAGES", "SETUP_SKIP_SYSTEM_PACKAGES"))
+    strict_install_scripts: bool = Field(False, env=("STRICT_INSTALL_SCRIPTS", "SETUP_STRICT_INSTALL_SCRIPTS"))
 
     class Config:
         env_prefix = ""
@@ -71,6 +71,9 @@ def build_settings_from_args(args: object, root: Path) -> Settings:
     for key in ("home", "os_name", "arch", "ci", "skip_system_packages", "strict_install_scripts"):
         if hasattr(args, key):
             val = getattr(args, key)
-            if val is not None:
+            if isinstance(val, bool):
+                if val:
+                    data[key] = val
+            elif val is not None:
                 data[key] = val
     return Settings(**data)

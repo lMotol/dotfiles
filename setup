@@ -14,4 +14,6 @@ if [ ! -x "$VENV_DIR/bin/python" ]; then
     uv venv "$VENV_DIR"
 fi
 
+uv pip install --python "$VENV_DIR/bin/python" --editable "$SCRIPT_DIR"
+
 exec "$VENV_DIR/bin/python" "$SCRIPT_DIR/dotfiles_cli.py" setup "$@"

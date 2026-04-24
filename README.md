@@ -48,6 +48,7 @@ cd ~/src/dotfiles
 
 セットアップスクリプトは以下を実行します:
 - `uv venv .setup-venv` で setup 用の仮想環境を作成
+- `uv pip install --editable .` で CLI 依存を `.setup-venv` に同期
 - `.setup-venv` 内の Python で `dotfiles_cli.py setup` を実行
 - OSを自動検出（Linux/macOS）
 - 必要なパッケージのインストール

@@ -1,19 +1,21 @@
-[tool.poetry]
+[project]
 name = "dotfiles"
 version = "0.1.0"
 description = "Manage and bootstrap dotfiles"
-authors = ["motomasa <motomasa@example.com>"]
+authors = [{ name = "motomasa", email = "motomasa@example.com" }]
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.9,<1",
+    "rich>=13,<14",
+    "pydantic>=1.10,<2",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10"
-typer = "^0.9"
-rich = "^13.0"
-pydantic = "^1.10"
-uv = "*" # Astral's `uv` tool for dependency/environment management
-
-[tool.poetry.scripts]
+[project.scripts]
 dotfiles = "dotfiles.cli:main"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["dotfiles"]
