@@ -1,6 +1,7 @@
 services:
-  dotfiles:
-    build: .
-    container_name: dotfiles-env
-    tty: true
-
+  dotfiles-linux:
+    build:
+      context: .
+    image: dotfiles-linux-test
+    volumes:
+      - ..:/workspace:ro

@@ -8,6 +8,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  test-linux-docker:
+    name: Test on Linux Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build Linux smoke test image
+        run: docker build -t dotfiles-linux-test -f test_dotfiles/Dockerfile test_dotfiles
+
+      - name: Run Linux smoke test
+        run: docker run --rm -v "$GITHUB_WORKSPACE:/workspace:ro" dotfiles-linux-test
+
   test-ubuntu:
     name: Test on Ubuntu
     runs-on: ubuntu-latest

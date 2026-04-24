@@ -37,6 +37,15 @@ echo "OS: $OS"
 echo "CI: $IS_CI"
 echo "==================================="
 
+case "${SETUP_SKIP_SYSTEM_PACKAGES:-0}" in
+    1 | true | TRUE | yes | YES)
+        SKIP_SYSTEM_PACKAGES=true
+        ;;
+    *)
+        SKIP_SYSTEM_PACKAGES=false
+        ;;
+esac
+
 ensure_managed_source() {
     local shell_rc=$1
     local block_name=$2
@@ -81,7 +90,9 @@ should_skip_dotfile() {
 }
 
 # パッケージのインストール
-if [ "$OS" = "macos" ]; then
+if [ "$SKIP_SYSTEM_PACKAGES" = true ]; then
+    echo "Skipping system package installation (SETUP_SKIP_SYSTEM_PACKAGES=${SETUP_SKIP_SYSTEM_PACKAGES:-0})"
+elif [ "$OS" = "macos" ]; then
     # Homebrew のインストール
     if ! command -v brew &>/dev/null; then
         if [ "$IS_CI" = true ]; then
@@ -96,7 +107,6 @@ if [ "$OS" = "macos" ]; then
         echo "Installing packages via Homebrew..."
         brew install curl git ripgrep tmux fd neovim sheldon universal-ctags lazygit hammerspoon
     fi
-
 elif [ "$OS" = "linux" ]; then
     if [ "$IS_CI" = true ]; then
         echo "Skipping apt update/upgrade in CI"

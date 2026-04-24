@@ -1,41 +1,42 @@
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
-# 非対話的なインストールのための環境変数
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 必要なパッケージのインストール
 RUN apt-get update && apt-get install -y \
-    git \
+    bash \
+    build-essential \
+    ca-certificates \
     curl \
-    vim \
-    zsh \
+    fd-find \
+    file \
+    git \
+    locales \
+    neovim \
+    npm \
+    ripgrep \
     sudo \
-    locales && \
-    locale-gen en_US.UTF-8 && \
-    rm -rf /var/lib/apt/lists/*
+    tmux \
+    universal-ctags \
+    unzip \
+    xz-utils \
+    zsh && \
+    locale-gen en_US.UTF-8
 
-# ロケールの設定
-ENV LANG en_US.UTF-8  
-ENV LANGUAGE en_US:en  
-ENV LC_ALL en_US.UTF-8  
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
-# 任意ですが、作業用ユーザーを作成（root 以外で作業したい場合）
-RUN useradd -ms /bin/bash devuser && \
-    echo "devuser:devuser" | chpasswd && \
-    adduser devuser sudo
+RUN useradd -m -s /bin/bash tester && \
+    printf 'tester ALL=(ALL) NOPASSWD:ALL\n' >/etc/sudoers.d/tester && \
+    chmod 0440 /etc/sudoers.d/tester && \
+    install -d -o tester -g tester /workspace
 
-# 作業ディレクトリの設定
-WORKDIR /home/devuser
+COPY entrypoint.sh /usr/local/bin/test-dotfiles-entrypoint
+COPY verify_setup.sh /usr/local/bin/verify-dotfiles-setup
 
-# entrypoint スクリプトをコンテナ内にコピー
-COPY entrypoint.sh /home/devuser/entrypoint.sh
-RUN sudo chmod +x /home/devuser/entrypoint.sh
+RUN chmod +x /usr/local/bin/test-dotfiles-entrypoint /usr/local/bin/verify-dotfiles-setup
 
-# 作業ユーザーに切り替え
-USER devuser
+USER tester
+WORKDIR /workspace
 
-# デフォルトのコマンドは entrypoint スクリプトの実行
-CMD ["/home/devuser/entrypoint.sh"]
-
-# コンテナ起動時のデフォルトコマンド
-CMD [ "bash" ]
+ENTRYPOINT ["/usr/local/bin/test-dotfiles-entrypoint"]

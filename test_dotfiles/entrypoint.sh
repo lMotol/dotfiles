@@ -1,20 +1,58 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
 
-# クローン先ディレクトリ
-DOTFILES_DIR="$HOME/dotfiles"
-BRANCH_NAME="update-script"
-COMMIT_HASH=43e1805b78cf14d755b3584a6ee2b7e62ea41279
+set -euo pipefail
 
-REPO_URL="https://github.com/lMotol/dotfiles.git"
+WORKSPACE_DIR="${WORKSPACE_DIR:-/workspace}"
+REPO_DIR="$(mktemp -d /tmp/dotfiles-linux-test.XXXXXX)"
+FAKE_BIN_DIR="$HOME/.local/bin"
+VERIFY_SCRIPT=""
 
-# リポジトリが既に存在していなければクローン
-if [ ! -d "$DOTFILES_DIR/.git" ]; then
-    echo "Cloning dotfiles repository..."
-    git clone "$REPO_URL" "$DOTFILES_DIR" -b $BRANCH_NAME
+cleanup() {
+    rm -rf "$REPO_DIR"
+}
+
+trap cleanup EXIT
+
+mkdir -p "$FAKE_BIN_DIR"
+
+cat <<'EOF' >"$FAKE_BIN_DIR/codex"
+#!/usr/bin/env bash
+if [ "${1:-}" = "--version" ]; then
+    printf 'codex test stub\n'
+    exit 0
+fi
+printf 'codex test stub\n'
+EOF
+
+cat <<'EOF' >"$FAKE_BIN_DIR/lazygit"
+#!/usr/bin/env bash
+if [ "${1:-}" = "--version" ]; then
+    printf 'lazygit test stub\n'
+    exit 0
+fi
+printf 'lazygit test stub\n'
+EOF
+
+chmod +x "$FAKE_BIN_DIR/codex" "$FAKE_BIN_DIR/lazygit"
+
+cp -a "$WORKSPACE_DIR/." "$REPO_DIR/"
+
+VERIFY_SCRIPT="$REPO_DIR/test_dotfiles/verify_setup.sh"
+
+export PATH="$FAKE_BIN_DIR:$PATH"
+export CI=true
+export SETUP_SKIP_SYSTEM_PACKAGES=1
+unset EDITOR VISUAL GIT_EDITOR FCEDIT NVM_DIR
+
+bash -n "$REPO_DIR/setup"
+
+"$REPO_DIR/setup"
+"$REPO_DIR/setup"
+
+if command -v verify-dotfiles-setup >/dev/null 2>&1; then
+    verify-dotfiles-setup "$REPO_DIR"
 else
-    echo "Dotfiles repository already exists. Pulling latest changes..."
-    cd "$DOTFILES_DIR" && git pull
+    bash "$VERIFY_SCRIPT" "$REPO_DIR"
 fi
 
-cd $DOTFILES_DIR
+printf 'Linux setup smoke test completed successfully.\n'
