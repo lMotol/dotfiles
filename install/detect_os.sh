@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 # OS検出ユーティリティ
 
 detect_os() {

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 # OpenAI Codex CLI インストールスクリプト
 
 TOOL_NAME="Codex CLI"

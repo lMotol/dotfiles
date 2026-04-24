@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 # Neovim のインストール（Linux専用）
 
 # macOSの場合はスキップ
@@ -13,34 +16,27 @@ if command -v nvim >/dev/null 2>&1; then
 fi
 
 arch=$(uname -m)
+tmp_dir=$(mktemp -d)
+
+cleanup() {
+    rm -rf "$tmp_dir"
+}
+
+trap cleanup EXIT
+
 echo "Detected architecture: $arch"
 
-cd "$HOME" || exit 1
+install_root="/opt/nvim"
+binary_path="/usr/local/bin/nvim"
 
 case "$arch" in
     x86_64|i386|i686)
         echo "Installing Neovim for x86_64..."
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
-	chmod u+x nvim-linux-x86_64.appimage
-	./nvim-linux-x86_64.appimage --appimage-extract
-        rm nvim-linux-x86_64.appimage
-	
-        sudo rm -rf /squashfs-root
-	sudo mv squashfs-root /
-	sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
-        
+        appimage_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage"
         ;;
     aarch64|armv7l|arm64)
         echo "Installing Neovim for ARM64..."
-        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-arm64.appimage
-        chmod u+x nvim-linux-arm64.appimage
-        ./nvim-linux-arm64.appimage --appimage-extract
-        
-        sudo rm -rf /squashfs-root
-        sudo mv squashfs-root /
-        sudo ln -sf /squashfs-root/AppRun /usr/bin/nvim
-        
-        rm nvim-linux-arm64.appimage
+        appimage_url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux-arm64.appimage"
         ;;
     *)
         echo "Unsupported architecture: $arch"
@@ -48,5 +44,17 @@ case "$arch" in
         ;;
 esac
 
+curl -fsSLo "$tmp_dir/nvim.appimage" "$appimage_url"
+chmod u+x "$tmp_dir/nvim.appimage"
+
+(
+    cd "$tmp_dir"
+    ./nvim.appimage --appimage-extract >/dev/null
+)
+
+sudo rm -rf "$install_root"
+sudo mv "$tmp_dir/squashfs-root" "$install_root"
+sudo ln -sf "$install_root/AppRun" "$binary_path"
+
 echo "Neovim installation complete!"
-nvim --version
+nvim --version | head -n 1

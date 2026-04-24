@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 # tmux plugin manager のインストール
 
 TARGET_DIR="$HOME/.tmux/plugins/tpm"
@@ -6,16 +9,15 @@ TARGET_DIR="$HOME/.tmux/plugins/tpm"
 if [ -d "$TARGET_DIR" ]; then
     if [ -d "$TARGET_DIR/.git" ]; then
         echo "Updating tpm..."
-        cd "$TARGET_DIR" || exit 1
-        git pull origin master
+        git -C "$TARGET_DIR" pull --ff-only origin master
     else
         echo "Error: $TARGET_DIR exists but is not a git repository"
         exit 1
     fi
 else
     echo "Installing tpm..."
-    mkdir -p "$TARGET_DIR"
-    git clone https://github.com/tmux-plugins/tpm "$TARGET_DIR"
+    mkdir -p "$(dirname "$TARGET_DIR")"
+    git clone --depth 1 https://github.com/tmux-plugins/tpm "$TARGET_DIR"
 fi
 
 echo "tpm installation complete!"
