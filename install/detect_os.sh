@@ -1,28 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-# OS検出ユーティリティ
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-detect_os() {
-    case "$(uname -s)" in
-        Darwin*)
-            echo "macos"
-            ;;
-        Linux*)
-            echo "linux"
-            ;;
-        *)
-            echo "unknown"
-            ;;
-    esac
-}
-
-detect_arch() {
-    uname -m
-}
-
-# スクリプトから直接呼ばれた場合
-if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
-    detect_os
-fi
+exec python3 "$SCRIPT_DIR/../dotfiles_cli.py" detect-os "$@"

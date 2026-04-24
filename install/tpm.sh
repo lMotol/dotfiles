@@ -1,26 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
-# tmux plugin manager のインストール
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-TARGET_DIR="$HOME/.tmux/plugins/tpm"
-
-if [ -d "$TARGET_DIR" ]; then
-    if [ -d "$TARGET_DIR/.git" ]; then
-        echo "Updating tpm..."
-        git -C "$TARGET_DIR" pull --ff-only origin master
-    else
-        echo "Error: $TARGET_DIR exists but is not a git repository"
-        exit 1
-    fi
-else
-    echo "Installing tpm..."
-    mkdir -p "$(dirname "$TARGET_DIR")"
-    git clone --depth 1 https://github.com/tmux-plugins/tpm "$TARGET_DIR"
-fi
-
-echo "tpm installation complete!"
-echo "To install tmux plugins:"
-echo "  1. Start tmux: tmux"
-echo "  2. Press: prefix + I (capital i)"
+exec python3 "$SCRIPT_DIR/../dotfiles_cli.py" install tpm "$@"
