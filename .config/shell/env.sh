@@ -4,6 +4,14 @@ export GIT_EDITOR="${GIT_EDITOR:-$EDITOR}"
 export FCEDIT="${FCEDIT:-$EDITOR}"
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*)
+        ;;
+    *)
+        export PATH="$HOME/.local/bin:$PATH"
+        ;;
+esac
+
 if command -v brew >/dev/null 2>&1; then
     ctags_prefix="$(brew --prefix universal-ctags 2>/dev/null || true)"
     ctags_bin="$ctags_prefix/bin"

@@ -17,6 +17,9 @@
 # Temporary files
 *.tmp
 *.temp
+__pycache__/
+*.pyc
+.setup-venv/
 
 # IDE
 .vscode/
@@ -27,3 +30,8 @@ test_local/
 
 # Logs
 *.log
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key

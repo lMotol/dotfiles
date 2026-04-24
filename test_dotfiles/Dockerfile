@@ -22,6 +22,9 @@ RUN apt-get update && apt-get install -y \
     zsh && \
     locale-gen en_US.UTF-8
 
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    install -m 0755 /root/.local/bin/uv /usr/local/bin/uv
+
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8

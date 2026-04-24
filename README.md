@@ -16,10 +16,11 @@
 │   ├── sheldon/           # Sheldon（zshプラグインマネージャー）設定
 │   └── shell/             # shell 共通設定
 ├── ast_grep/              # ast-grep 設定
+├── dotfiles/              # setup CLI の Python 実装
+├── dotfiles_cli.py        # setup CLI entrypoint
 ├── install/               # インストールスクリプト
 ├── test_dotfiles/         # Linux 用 smoke test
-├── setup                  # メインセットアップスクリプト
-└── poetry_install.sh      # Poetry インストールスクリプト
+└── setup                  # uv venv を作って setup CLI を起動
 ```
 
 ## セットアップ
@@ -29,6 +30,7 @@
 - Git
 - Bash/Zsh
 - curl
+- uv
 
 ### インストール手順
 
@@ -46,6 +48,8 @@ cd ~/src/dotfiles
 ```
 
 セットアップスクリプトは以下を実行します:
+- `uv venv .setup-venv` で setup 用の仮想環境を作成
+- `.setup-venv` 内の Python で `dotfiles_cli.py setup` を実行
 - OSを自動検出（Linux/macOS）
 - 必要なパッケージのインストール
 - 追加ツールのインストール（fzf, Neovim, npm, tpm）
@@ -92,13 +96,7 @@ tmux
 - fd
 - Sheldon
 
-## オプション: Poetry
-
-Pythonのパッケージマネージャー Poetryをインストールする場合:
-
-```bash
-./poetry_install.sh
-```
+Python の仮想環境を作り直したい場合は、`.setup-venv/` を消してからもう一度 `./setup` を実行してください。
 
 ## テスト
 
@@ -117,6 +115,12 @@ Linux smoke test を Docker で実行できます:
 ```bash
 docker build -t dotfiles-linux-test -f test_dotfiles/Dockerfile test_dotfiles
 docker run --rm -v "$(pwd):/workspace:ro" dotfiles-linux-test
+```
+
+Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
+
+```bash
+./.setup-venv/bin/python dotfiles_cli.py install poetry
 ```
 
 ## カスタマイズ
