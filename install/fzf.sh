@@ -10,6 +10,6 @@ fi
 
 echo "Installing fzf..."
 git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_DIR"
-"$FZF_DIR/install" --all
+"$FZF_DIR/install" --all --no-update-rc
 
 echo "fzf installation complete!"

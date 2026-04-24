@@ -11,7 +11,7 @@ echo "npm is not installed. Installing via nvm..."
 # nvmのインストール
 if ! command -v nvm &>/dev/null; then
     echo "Installing nvm..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    PROFILE=/dev/null curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
     
     # nvmを現在のシェルセッションで利用可能にする
     export NVM_DIR="$HOME/.nvm"
