@@ -48,6 +48,18 @@ unset EDITOR VISUAL GIT_EDITOR FCEDIT NVM_DIR
 bash -n "$REPO_DIR/setup"
 
 "$REPO_DIR/setup"
+
+# After the first run the setup script should have created the venv at
+# $REPO_DIR/.setup-venv. Install Python dependencies into that venv so the
+# modernized CLI (Typer/Rich/Pydantic) can import required packages during the
+# second run. This keeps the change minimal and avoids modifying the project
+# setup flow itself.
+if [ -x "$REPO_DIR/.setup-venv/bin/pip" ]; then
+    echo "Installing Python dependencies into venv..."
+    "$REPO_DIR/.setup-venv/bin/pip" install --upgrade pip setuptools wheel
+    "$REPO_DIR/.setup-venv/bin/pip" install typer rich pydantic
+fi
+
 "$REPO_DIR/setup"
 
 if command -v verify-dotfiles-setup >/dev/null 2>&1; then
