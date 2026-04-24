@@ -2,20 +2,22 @@
 
 個人的なdotfilesリポジトリです。Neovim、tmux、シェル設定などを管理しています。
 
-![Test Status](https://github.com/yourusername/dotfiles/workflows/Test%20Dotfiles%20Setup/badge.svg)
+![Test Status](https://github.com/lMotol/dotfiles/actions/workflows/test.yml/badge.svg)
 
 ## 構成
 
 ```
 .
 ├── .clang-format          # C/C++ フォーマット設定
+├── .gitconfig             # Git 設定
 ├── .tmux.conf             # tmux 設定
 ├── .config/
 │   ├── nvim/              # Neovim 設定
-│   └── sheldon/           # Sheldon（zshプラグインマネージャー）設定
+│   ├── sheldon/           # Sheldon（zshプラグインマネージャー）設定
+│   └── shell/             # shell 共通設定
 ├── ast_grep/              # ast-grep 設定
 ├── install/               # インストールスクリプト
-├── test_dotfiles/         # Docker テスト環境
+├── test_dotfiles/         # Linux 用 smoke test
 ├── setup                  # メインセットアップスクリプト
 └── poetry_install.sh      # Poetry インストールスクリプト
 ```
@@ -33,8 +35,8 @@
 1. このリポジトリをクローン:
 
 ```bash
-git clone --recursive https://github.com/yourusername/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+git clone --recursive https://github.com/lMotol/dotfiles.git ~/src/dotfiles
+cd ~/src/dotfiles
 ```
 
 2. セットアップスクリプトを実行:
@@ -48,6 +50,7 @@ cd ~/dotfiles
 - 必要なパッケージのインストール
 - 追加ツールのインストール（fzf, Neovim, npm, tpm）
 - dotfilesのシンボリックリンク作成
+- `~/.bashrc`, `~/.bash_profile`, `~/.zshrc` に managed block を追加
 
 3. シェルを再読み込み:
 
@@ -103,17 +106,17 @@ Pythonのパッケージマネージャー Poetryをインストールする場�
 
 このリポジトリはGitHub Actionsで自動テストされています。プッシュやプルリクエスト時に以下がテストされます：
 
-- **Ubuntu環境**: セットアップスクリプトの動作確認
-- **macOS環境**: セットアップスクリプトの動作確認
+- **Linux Docker**: `setup` の smoke test
+- **macOS runner**: path-independent な `setup` の smoke test
 - **ShellCheck**: 全スクリプトの静的解析
 
 ### ローカルテスト
 
-Docker環境でセットアップをテストできます:
+Linux smoke test を Docker で実行できます:
 
 ```bash
-cd test_dotfiles
-docker compose up
+docker build -t dotfiles-linux-test -f test_dotfiles/Dockerfile test_dotfiles
+docker run --rm -v "$(pwd):/workspace:ro" dotfiles-linux-test
 ```
 
 ## カスタマイズ
@@ -121,25 +124,20 @@ docker compose up
 各設定ファイルを直接編集してカスタマイズしてください:
 - Neovim: `.config/nvim/`
 - tmux: `.tmux.conf`
-- Shell: ホームディレクトリの`.bashrc`または`.zshrc`
+- Shell: `.config/shell/`
 
 ## トラブルシューティング
 
 ### シンボリックリンクが作成されない
 
 ```bash
-cd ~/dotfiles
+cd /path/to/dotfiles
 ./setup
 ```
 
 ### tmuxプラグインがインストールされない
 
 tmux内で `prefix + I` を押してください（デフォルトのprefixは `Ctrl+b`）。
-
-### TODO
-- .bashrc や .zshrc を一元管理する
-- ctrl+x, ctrl+e でコマンドを nvim でコマンドを修正できるようにしたい
-    - 環境変数 `export EDITOR=nvim`, `export VISUAL=nvim` などを設定しておく必要がある
 
 ## ライセンス
 
