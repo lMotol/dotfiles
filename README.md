@@ -15,7 +15,6 @@
 │   ├── nvim/              # Neovim 設定
 │   ├── sheldon/           # Sheldon（zshプラグインマネージャー）設定
 │   └── shell/             # shell 共通設定
-├── ast_grep/              # ast-grep 設定
 ├── dotfiles/              # setup CLI の Python 実装
 ├── dotfiles_cli.py        # setup CLI entrypoint
 ├── install/               # インストールスクリプト
