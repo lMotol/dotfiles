@@ -117,6 +117,14 @@ docker build -t dotfiles-linux-test -f test_dotfiles/Dockerfile test_dotfiles
 docker run --rm -v "$(pwd):/workspace:ro" dotfiles-linux-test
 ```
 
+ホスト上で安全に実行する場合は、test 用の一時 HOME を使うラッパーを使います:
+
+```bash
+bash test_dotfiles/run.sh
+```
+
+実行ログは `test_dotfiles/logs/` に保存されます。
+
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 
 ```bash
