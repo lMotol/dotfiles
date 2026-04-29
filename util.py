@@ -9,12 +9,34 @@ from pathlib import Path
 from typing import Sequence
 
 
+def quote_command(command: Sequence[str]) -> str:
+    return " ".join(shlex.quote(part) for part in command)
+
+
+def run_command(
+    command: Sequence[str],
+    *,
+    cwd: Path | None = None,
+    env: dict[str, str] | None = None,
+    capture_output: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    print(f"+ {quote_command(command)}", flush=True)
+    return subprocess.run(
+        list(command),
+        check=True,
+        cwd=str(cwd) if cwd is not None else None,
+        env=env,
+        text=True,
+        capture_output=capture_output,
+    )
+
+
 class CommandRunner:
     def log(self, message: str) -> None:
         print(message, flush=True)
 
     def quote_command(self, command: Sequence[str]) -> str:
-        return " ".join(shlex.quote(part) for part in command)
+        return quote_command(command)
 
     def run(
         self,
@@ -24,15 +46,7 @@ class CommandRunner:
         env: dict[str, str] | None = None,
         capture_output: bool = False,
     ) -> subprocess.CompletedProcess[str]:
-        self.log(f"$ {self.quote_command(command)}")
-        return subprocess.run(
-            list(command),
-            check=True,
-            cwd=str(cwd) if cwd is not None else None,
-            env=env,
-            text=True,
-            capture_output=capture_output,
-        )
+        return run_command(command, cwd=cwd, env=env, capture_output=capture_output)
 
     def run_shell(
         self,

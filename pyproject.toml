@@ -11,11 +11,12 @@ dependencies = [
 ]
 
 [project.scripts]
-dotfiles = "dotfiles.cli:main"
+dotfiles = "cli:main"
 
 [build-system]
 requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["dotfiles"]
+packages = ["install"]
+py-modules = ["cli", "context", "installers", "setup_flow", "util"]

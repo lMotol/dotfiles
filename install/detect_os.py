@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-import sys
+from __future__ import annotations
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+if __package__ in {None, ""}:
+    import sys
+    from pathlib import Path
 
-from dotfiles.cli import main
+    ROOT = Path(__file__).resolve().parents[1]
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+
+from install._script import run_detect_os_script
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(["detect-os", *sys.argv[1:]]))
+    raise SystemExit(run_detect_os_script())

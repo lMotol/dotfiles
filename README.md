@@ -15,9 +15,13 @@
 │   ├── nvim/              # Neovim 設定
 │   ├── sheldon/           # Sheldon（zshプラグインマネージャー）設定
 │   └── shell/             # shell 共通設定
-├── dotfiles/              # setup CLI の Python 実装
+├── cli.py                 # setup CLI
+├── context.py             # setup 実行コンテキスト
 ├── dotfiles_cli.py        # setup CLI entrypoint
-├── install/               # インストールスクリプト
+├── installers.py          # installer registry
+├── install/               # ツール別 installer 実装
+├── setup_flow.py          # setup 本体フロー
+├── util.py                # Python 実行ユーティリティ
 ├── test_dotfiles/         # Linux 用 smoke test
 └── setup                  # uv venv を作って setup CLI を起動
 ```

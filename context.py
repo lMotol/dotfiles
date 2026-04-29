@@ -7,12 +7,7 @@ from pydantic import BaseSettings, Field, validator
 
 
 class Settings(BaseSettings):
-    """Application settings and runtime context.
-
-    This uses Pydantic's BaseSettings so values can be provided via environment
-    variables and validated automatically. It's intentionally small and mirrors
-    the previous AppContext shape.
-    """
+    """Application settings and runtime context."""
 
     root: Path
     home: Path = Field(default_factory=lambda: Path("~").expanduser().resolve())
@@ -61,12 +56,6 @@ class Settings(BaseSettings):
 
 
 def build_settings_from_args(args: object, root: Path) -> Settings:
-    """Create Settings from CLI args and environment.
-
-    This keeps the CLI surface small: Typer will populate an object with the
-    same attributes we used before and this function folds them into Pydantic.
-    """
-    # pick values from args if present, otherwise let Settings detect from env
     data = {"root": root}
     for key in ("home", "os_name", "arch", "ci", "skip_system_packages", "strict_install_scripts"):
         if hasattr(args, key):

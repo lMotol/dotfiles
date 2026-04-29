@@ -7,19 +7,27 @@ from typing import Sequence
 import typer
 from rich.console import Console
 
-from .context import build_settings_from_args, Settings
-from .installers import INSTALLER_FUNCTIONS, run_installer
-from .setup_flow import run_setup
-from .shell import CommandRunner
+from context import build_settings_from_args
+from installers import INSTALLER_FUNCTIONS, run_installer
+from setup_flow import run_setup
+from util import CommandRunner
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parent
 
 app = typer.Typer(help="dotfiles management CLI")
 console = Console()
 
 
+def _make_args(os: str | None, ci: bool, skip_system_packages: bool, strict_install_scripts: bool) -> object:
+    args = type("Args", (), {})()
+    args.os_name = os
+    args.ci = ci
+    args.skip_system_packages = skip_system_packages
+    args.strict_install_scripts = strict_install_scripts
+    return args
+
+
 def _make_runner() -> CommandRunner:
-    # central place to create the command runner; keep it lightweight
     return CommandRunner()
 
 
@@ -31,17 +39,7 @@ def detect_os(
     strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
 ):
     """Print detected OS"""
-    # Typer gives us plain values here; wrap them in the same lightweight
-    # object shape the rest of the CLI uses before handing off to Settings.
-    class _A:
-        pass
-
-    a = _A()
-    a.os_name = os
-    a.ci = ci
-    a.skip_system_packages = skip_system_packages
-    a.strict_install_scripts = strict_install_scripts
-    settings = build_settings_from_args(a, ROOT)
+    settings = build_settings_from_args(_make_args(os, ci, skip_system_packages, strict_install_scripts), ROOT)
     console.print(settings.os_name)
 
 
@@ -54,12 +52,7 @@ def install(
     strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
 ):
     """Run a single installer"""
-    a = type("_A", (), {})()
-    a.os_name = os
-    a.ci = ci
-    a.skip_system_packages = skip_system_packages
-    a.strict_install_scripts = strict_install_scripts
-    settings = build_settings_from_args(a, ROOT)
+    settings = build_settings_from_args(_make_args(os, ci, skip_system_packages, strict_install_scripts), ROOT)
     runner = _make_runner()
     try:
         run_installer(target, settings, runner)
@@ -79,12 +72,7 @@ def setup(
     strict_install_scripts: bool = typer.Option(False, "--strict-install-scripts", help="fail fast when an installer fails"),
 ):
     """Run full setup"""
-    a = type("_A", (), {})()
-    a.os_name = os
-    a.ci = ci
-    a.skip_system_packages = skip_system_packages
-    a.strict_install_scripts = strict_install_scripts
-    settings = build_settings_from_args(a, ROOT)
+    settings = build_settings_from_args(_make_args(os, ci, skip_system_packages, strict_install_scripts), ROOT)
     runner = _make_runner()
     try:
         result = run_setup(settings, runner)
@@ -98,12 +86,8 @@ def setup(
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Compatibility wrapper that preserves the previous main signature.
-
-    Returns an exit code so existing entrypoints keep working.
-    """
     try:
         app(args=list(argv) if argv is not None else None, standalone_mode=False)
         return 0
-    except typer.Exit as e:
-        return e.exit_code or 0
+    except typer.Exit as exc:
+        return exc.exit_code or 0
