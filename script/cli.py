@@ -7,12 +7,12 @@ from typing import Sequence
 import typer
 from rich.console import Console
 
-from context import build_settings_from_args
-from installers import INSTALLER_FUNCTIONS, run_installer
-from setup_flow import run_setup
-from util import CommandRunner
+from .context import build_settings_from_args
+from .installers import INSTALLER_FUNCTIONS, run_installer
+from .setup_flow import run_setup
+from .util import CommandRunner
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 
 app = typer.Typer(help="dotfiles management CLI")
 console = Console()

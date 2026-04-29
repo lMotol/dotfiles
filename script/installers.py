@@ -3,9 +3,9 @@ from __future__ import annotations
 import os
 from collections.abc import Callable
 
-from context import Settings
-from install import codex, fzf, lazygit, npm, nvim, poetry, tpm
-from util import CommandRunner
+from .context import Settings
+from .install import codex, fzf, lazygit, npm, nvim, poetry, tpm
+from .util import CommandRunner
 
 BREW_PACKAGES = [
     "curl",

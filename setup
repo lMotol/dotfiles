@@ -16,4 +16,4 @@ fi
 
 uv pip install --python "$VENV_DIR/bin/python" --editable "$SCRIPT_DIR"
 
-exec "$VENV_DIR/bin/python" "$SCRIPT_DIR/dotfiles_cli.py" setup "$@"
+exec "$VENV_DIR/bin/python" "$SCRIPT_DIR/script/dotfiles.py" setup "$@"

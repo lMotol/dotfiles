@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from context import Settings
-from installers import SETUP_INSTALLERS, install_system_packages, run_installer
-from util import CommandRunner
+from .context import Settings
+from .installers import SETUP_INSTALLERS, install_system_packages, run_installer
+from .util import CommandRunner
 
 
 def ensure_managed_source(shell_rc: Path, block_name: str, source_target: Path) -> None:

@@ -6,7 +6,7 @@ if __package__ in {None, ""}:
     import sys
     from pathlib import Path
 
-    ROOT = Path(__file__).resolve().parents[1]
+    ROOT = Path(__file__).resolve().parents[2]
     if str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
 
@@ -14,10 +14,10 @@ import os
 import shlex
 from pathlib import Path
 
-from context import Settings
-from util import CommandRunner
+from script.context import Settings
+from script.util import CommandRunner
 
-from install._script import run_install_script
+from script.install._script import run_install_script
 
 
 def install_tool(context: Settings, runner: CommandRunner) -> None:

@@ -15,13 +15,14 @@
 │   ├── nvim/              # Neovim 設定
 │   ├── sheldon/           # Sheldon（zshプラグインマネージャー）設定
 │   └── shell/             # shell 共通設定
-├── cli.py                 # setup CLI
-├── context.py             # setup 実行コンテキスト
-├── dotfiles_cli.py        # setup CLI entrypoint
-├── installers.py          # installer registry
-├── install/               # ツール別 installer 実装
-├── setup_flow.py          # setup 本体フロー
-├── util.py                # Python 実行ユーティリティ
+├── script/                # setup 用 Python script 群
+│   ├── cli.py             # setup CLI
+│   ├── context.py         # setup 実行コンテキスト
+│   ├── dotfiles.py        # setup CLI entrypoint
+│   ├── installers.py      # installer registry
+│   ├── install/           # ツール別 installer 実装
+│   ├── setup_flow.py      # setup 本体フロー
+│   └── util.py            # Python 実行ユーティリティ
 ├── test_dotfiles/         # Linux 用 smoke test
 └── setup                  # uv venv を作って setup CLI を起動
 ```
@@ -53,7 +54,7 @@ cd ~/src/dotfiles
 セットアップスクリプトは以下を実行します:
 - `uv venv .setup-venv` で setup 用の仮想環境を作成
 - `uv pip install --editable .` で CLI 依存を `.setup-venv` に同期
-- `.setup-venv` 内の Python で `dotfiles_cli.py setup` を実行
+- `.setup-venv` 内の Python で `script/dotfiles.py setup` を実行
 - OSを自動検出（Linux/macOS）
 - 必要なパッケージのインストール
 - 追加ツールのインストール（fzf, Neovim, npm, tpm）
@@ -125,7 +126,7 @@ bash test_dotfiles/run.sh
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 
 ```bash
-./.setup-venv/bin/python dotfiles_cli.py install poetry
+./.setup-venv/bin/python script/dotfiles.py install poetry
 ```
 
 ## カスタマイズ

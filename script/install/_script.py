@@ -9,12 +9,12 @@ if str(ROOT) not in sys.path:
 
 
 def run_install_script(target: str) -> int:
-    from cli import main
+    from script.cli import main
 
     return main(["install", target, *sys.argv[1:]])
 
 
 def run_detect_os_script() -> int:
-    from cli import main
+    from script.cli import main
 
     return main(["detect-os", *sys.argv[1:]])
