@@ -52,9 +52,9 @@ cd ~/src/dotfiles
 ```
 
 セットアップスクリプトは以下を実行します:
-- `uv venv .setup-venv` で setup 用の仮想環境を作成
-- `uv pip install --editable .` で CLI 依存を `.setup-venv` に同期
-- `.setup-venv` 内の Python で `script/dotfiles.py setup` を実行
+- `uv venv script/.setup-venv` で setup 用の仮想環境を作成
+- `uv pip install --editable .` で CLI 依存を `script/.setup-venv` に同期
+- `script/.setup-venv` 内の Python で `script/dotfiles.py setup` を実行
 - OSを自動検出（Linux/macOS）
 - 必要なパッケージのインストール
 - 追加ツールのインストール（fzf, Neovim, npm, tpm）
@@ -101,7 +101,7 @@ tmux
 - fd
 - Sheldon
 
-Python の仮想環境を作り直したい場合は、`.setup-venv/` を消してからもう一度 `./setup` を実行してください。
+Python の仮想環境を作り直したい場合は、`script/.setup-venv/` を消してからもう一度 `./setup` を実行してください。
 
 ## テスト
 
@@ -126,7 +126,7 @@ bash test_dotfiles/run.sh
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 
 ```bash
-./.setup-venv/bin/python script/dotfiles.py install poetry
+./script/.setup-venv/bin/python script/dotfiles.py install poetry
 ```
 
 ## カスタマイズ

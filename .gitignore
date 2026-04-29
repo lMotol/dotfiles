@@ -19,7 +19,7 @@
 *.temp
 __pycache__/
 *.pyc
-.setup-venv/
+script/.setup-venv/
 
 # IDE
 .vscode/
