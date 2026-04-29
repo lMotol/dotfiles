@@ -34,12 +34,11 @@ RUN useradd -m -s /bin/bash tester && \
     chmod 0440 /etc/sudoers.d/tester && \
     install -d -o tester -g tester /workspace
 
-COPY entrypoint.sh /usr/local/bin/test-dotfiles-entrypoint
-COPY verify_setup.sh /usr/local/bin/verify-dotfiles-setup
+COPY script/test_dotfiles /opt/dotfiles-test
 
-RUN chmod +x /usr/local/bin/test-dotfiles-entrypoint /usr/local/bin/verify-dotfiles-setup
+RUN chmod +x /opt/dotfiles-test/entrypoint.py
 
 USER tester
 WORKDIR /workspace
 
-ENTRYPOINT ["/usr/local/bin/test-dotfiles-entrypoint"]
+ENTRYPOINT ["python3", "/opt/dotfiles-test/entrypoint.py"]

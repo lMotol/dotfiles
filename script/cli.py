@@ -10,6 +10,7 @@ from rich.console import Console
 from .context import build_settings_from_args
 from .installers import INSTALLER_FUNCTIONS, run_installer
 from .setup_flow import run_setup
+from .test_dotfiles.runner import run_smoke_test
 from .util import CommandRunner
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +81,16 @@ def setup(
     except RuntimeError as exc:
         console.print(f"[red]Error:[/red] {exc}")
         raise typer.Exit(code=1)
+    except subprocess.CalledProcessError as exc:
+        console.print(f"[red]Command failed with exit code {exc.returncode}[/red]")
+        raise typer.Exit(code=exc.returncode)
+
+
+@app.command()
+def test() -> None:
+    """Run the Linux smoke test in Docker."""
+    try:
+        raise typer.Exit(code=run_smoke_test(ROOT))
     except subprocess.CalledProcessError as exc:
         console.print(f"[red]Command failed with exit code {exc.returncode}[/red]")
         raise typer.Exit(code=exc.returncode)

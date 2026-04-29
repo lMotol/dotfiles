@@ -23,7 +23,7 @@
 │   ├── install/           # ツール別 installer 実装
 │   ├── setup_flow.py      # setup 本体フロー
 │   └── util.py            # Python 実行ユーティリティ
-├── test_dotfiles/         # Linux 用 smoke test
+├── script/test_dotfiles/  # Linux 用 smoke test
 └── setup                  # uv venv を作って setup CLI を起動
 ```
 
@@ -115,13 +115,13 @@ Python の仮想環境を作り直したい場合は、`script/.setup-venv/` を
 
 ### ローカルテスト
 
-Linux smoke test は `test_dotfiles/run.sh` から実行します:
+Linux smoke test は CLI subcommand から実行します:
 
 ```bash
-bash test_dotfiles/run.sh
+uv run python script/dotfiles.py test
 ```
 
-このラッパーは Docker image を build して smoke test を実行し、ログを `test_dotfiles/logs/` に保存します。詳細は `test_dotfiles/README.md` を参照してください。
+このコマンドは Docker image を build して smoke test を実行し、ログを `script/test_dotfiles/logs/` に保存します。詳細は `script/test_dotfiles/README.md` を参照してください。
 
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 
