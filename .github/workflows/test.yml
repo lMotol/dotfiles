@@ -18,11 +18,8 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Build Linux smoke test image
-        run: docker build -t dotfiles-linux-test -f test_dotfiles/Dockerfile test_dotfiles
-
       - name: Run Linux smoke test
-        run: docker run --rm -v "$GITHUB_WORKSPACE:/workspace:ro" dotfiles-linux-test
+        run: bash test_dotfiles/run.sh
 
   test-macos:
     name: Test on macOS Runner

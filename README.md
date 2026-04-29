@@ -110,20 +110,13 @@ Python の仮想環境を作り直したい場合は、`.setup-venv/` を消し�
 
 ### ローカルテスト
 
-Linux smoke test を Docker で実行できます:
-
-```bash
-docker build -t dotfiles-linux-test -f test_dotfiles/Dockerfile test_dotfiles
-docker run --rm -v "$(pwd):/workspace:ro" dotfiles-linux-test
-```
-
-Docker smoke test を手元で実行する場合は、ラッパーを使えます:
+Linux smoke test は `test_dotfiles/run.sh` から実行します:
 
 ```bash
 bash test_dotfiles/run.sh
 ```
 
-このラッパーは Docker image を build して smoke test を実行し、ログを `test_dotfiles/logs/` に保存します。
+このラッパーは Docker image を build して smoke test を実行し、ログを `test_dotfiles/logs/` に保存します。詳細は `test_dotfiles/README.md` を参照してください。
 
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 
