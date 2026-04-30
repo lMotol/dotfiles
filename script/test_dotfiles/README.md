@@ -18,3 +18,11 @@ uv run python script/dotfiles.py test
 ```
 
 The generated log is written to `script/test_dotfiles/logs/`.
+
+To inspect the container after the smoke test passes, run:
+
+```bash
+uv run python script/dotfiles.py test --interactive
+```
+
+This opens a shell in the same container after verification completes. Exit the shell to end the test run.

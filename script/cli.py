@@ -88,13 +88,25 @@ def setup(
 
 
 @app.command()
-def test() -> None:
+def test(
+    interactive: bool = typer.Option(
+        False,
+        "--interactive",
+        "-i",
+        help="Drop into the container after the smoke test passes",
+    ),
+) -> None:
     """Run the Linux smoke test in Docker."""
     try:
-        raise typer.Exit(code=run_smoke_test(ROOT))
+        result = run_smoke_test(ROOT, interactive=interactive)
+    except RuntimeError as exc:
+        console.print(f"[red]Error:[/red] {exc}")
+        raise typer.Exit(code=1)
     except subprocess.CalledProcessError as exc:
         console.print(f"[red]Command failed with exit code {exc.returncode}[/red]")
         raise typer.Exit(code=exc.returncode)
+
+    raise typer.Exit(code=result)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

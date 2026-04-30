@@ -123,6 +123,14 @@ uv run python script/dotfiles.py test
 
 このコマンドは Docker image を build して smoke test を実行し、ログを `script/test_dotfiles/logs/` に保存します。詳細は `script/test_dotfiles/README.md` を参照してください。
 
+テスト後に同じ container の中へ入って確認したい場合は interactive mode を使います:
+
+```bash
+uv run python script/dotfiles.py test --interactive
+```
+
+smoke test が成功すると shell が開き、shell を抜けると test run が終了します。
+
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 
 ```bash

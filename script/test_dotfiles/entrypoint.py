@@ -3,6 +3,8 @@ from __future__ import annotations
 import os
 import shutil
 import stat
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -30,6 +32,7 @@ def _write_stub(path: Path, name: str) -> None:
 
 
 def main() -> int:
+    interactive = "--interactive" in sys.argv[1:]
     workspace_dir = Path(os.environ.get("WORKSPACE_DIR", "/workspace"))
     home = Path(os.environ["HOME"])
 
@@ -55,6 +58,13 @@ def main() -> int:
         run_command([str(repo_dir / "setup")], env=env)
 
         verify_setup(home, repo_dir)
+
+        if interactive:
+            shell = env.get("SHELL") or "/bin/bash"
+            print(f"Smoke test passed. Opening interactive shell in {repo_dir}.")
+            print(f"HOME={home}")
+            print("Exit the shell to finish the test run.")
+            subprocess.run([shell], check=True, cwd=repo_dir, env=env)
 
     print("Setup smoke test completed successfully.")
     return 0
