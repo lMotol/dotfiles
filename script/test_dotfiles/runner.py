@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import contextlib
 from datetime import datetime
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -69,7 +68,7 @@ def run_smoke_test(repo_root: Path, *, interactive: bool = False) -> int:
                 "run",
                 "--rm",
                 "--user",
-                f"{os.getuid()}:{os.getgid()}",
+                "0:0",
                 "-e",
                 "HOME=/tmp/dotfiles-test-home",
                 "-v",

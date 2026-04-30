@@ -4,20 +4,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
     bash \
-    build-essential \
     ca-certificates \
     curl \
-    fd-find \
     file \
-    git \
     locales \
-    neovim \
-    npm \
-    ripgrep \
+    python3 \
     sudo \
-    tmux \
-    universal-ctags \
-    unzip \
     xz-utils \
     zsh && \
     locale-gen en_US.UTF-8
