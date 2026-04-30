@@ -77,13 +77,14 @@ def setup(
     runner = _make_runner()
     try:
         result = run_setup(settings, runner)
-        raise typer.Exit(code=int(result))
     except RuntimeError as exc:
         console.print(f"[red]Error:[/red] {exc}")
         raise typer.Exit(code=1)
     except subprocess.CalledProcessError as exc:
         console.print(f"[red]Command failed with exit code {exc.returncode}[/red]")
         raise typer.Exit(code=exc.returncode)
+
+    raise typer.Exit(code=int(result))
 
 
 @app.command()
