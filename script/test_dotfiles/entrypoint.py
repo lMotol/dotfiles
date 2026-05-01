@@ -47,7 +47,6 @@ def main() -> int:
 
         env = os.environ.copy()
         env["PATH"] = f"{fake_bin_dir}:{env.get('PATH', '')}"
-        env["CI"] = "true"
         env["SETUP_STRICT_INSTALL_SCRIPTS"] = "1"
         for key in ("EDITOR", "VISUAL", "GIT_EDITOR", "FCEDIT", "NVM_DIR"):
             env.pop(key, None)

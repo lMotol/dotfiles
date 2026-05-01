@@ -77,6 +77,10 @@ def run_smoke_test(repo_root: Path, *, interactive: bool = False) -> int:
                 "-v",
                 f"{repo_root}:/workspace:ro",
             ]
+            for env_name in ("CI", "GITHUB_ACTIONS"):
+                env_value = os.environ.get(env_name)
+                if env_value is not None:
+                    docker_run.extend(["-e", f"{env_name}={env_value}"])
             if interactive:
                 docker_run.extend(["-it", IMAGE_NAME, "--interactive"])
                 print("Running setup smoke test in Docker and opening an interactive shell")
