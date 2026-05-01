@@ -1,4 +1,16 @@
 {
-    "$schema": "https://opencode.ai/config.json",
-    "plugin": ["opencode-beads"]
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "llama-local": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://pgx0.i.sslab.ics.keio.ac.jp:8080/v1",
+        "apiKey": "sk-local"
+      },
+      "models": {
+        "Qwen3.6-27B-Q4_K_M.gguf": {}
+      }
+    }
+  },
+  "plugin": ["opencode-beads"]
 }
