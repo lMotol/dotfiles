@@ -45,6 +45,12 @@ def _assert_command_output(expected: str, command: list[str]) -> None:
         raise RuntimeError(f"Unexpected command output\nexpected: {expected}\nactual:   {actual}")
 
 
+def _assert_command_output_contains(expected: str, command: list[str]) -> None:
+    actual = subprocess.run(command, check=True, text=True, capture_output=True).stdout.strip()
+    if expected not in actual:
+        raise RuntimeError(f"Unexpected command output\nexpected to contain: {expected}\nactual:              {actual}")
+
+
 def _assert_editor_environment() -> None:
     actual = subprocess.run(
         ["bash", "-lc", 'printf "%s|%s|%s|%s|%s" "$EDITOR" "$VISUAL" "$GIT_EDITOR" "$FCEDIT" "$NVM_DIR"'],
@@ -87,6 +93,7 @@ def verify_setup(home: Path, repo_dir: Path) -> None:
     _assert_count(home / ".zshrc", '# >>> dotfiles zshrc >>>', 1)
 
     _assert_editor_environment()
+    _assert_command_output_contains("tree-sitter", ["bash", "-ic", "tree-sitter --version"])
 
     _assert_contains(home / ".config/shell/zshrc", "bindkey '^X^E' edit-command-line")
     if shutil.which("zsh"):

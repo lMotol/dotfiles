@@ -43,7 +43,10 @@ def install_tool(context: Settings, runner: CommandRunner) -> None:
     )
     runner.log("Installing Node.js LTS via nvm...")
     runner.run_shell(shell_command)
-    runner.log("npm has been installed successfully!")
+    from script.installers import install_npm_global_packages
+
+    install_npm_global_packages(context, runner)
+    runner.log("npm and global packages have been installed successfully!")
 
 
 if __name__ == "__main__":

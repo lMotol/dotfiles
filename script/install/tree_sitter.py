@@ -11,15 +11,15 @@ if __package__ in {None, ""}:
         sys.path.insert(0, str(ROOT))
 
 from script.context import Settings
-from script.installers import install_codex_cli
+from script.installers import install_tree_sitter_cli
 from script.util import CommandRunner
 
 from script.install._script import run_install_script
 
 
 def install_tool(context: Settings, runner: CommandRunner) -> None:
-    install_codex_cli(context, runner)
+    install_tree_sitter_cli(context, runner)
 
 
 if __name__ == "__main__":
-    raise SystemExit(run_install_script("codex"))
+    raise SystemExit(run_install_script("tree-sitter"))
