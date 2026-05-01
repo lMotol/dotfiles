@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 from datetime import datetime
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -71,6 +72,8 @@ def run_smoke_test(repo_root: Path, *, interactive: bool = False) -> int:
                 "0:0",
                 "-e",
                 "HOME=/tmp/dotfiles-test-home",
+                "-e",
+                f"TERM={os.environ.get('TERM', 'xterm-256color')}",
                 "-v",
                 f"{repo_root}:/workspace:ro",
             ]
