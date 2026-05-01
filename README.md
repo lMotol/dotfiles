@@ -121,15 +121,15 @@ Linux smoke test は CLI subcommand から実行します:
 uv run python script/dotfiles.py test
 ```
 
-このコマンドは Docker image を build して smoke test を実行し、ログを `script/test_dotfiles/logs/` に保存します。詳細は `script/test_dotfiles/README.md` を参照してください。
+このコマンドは TTY 上では Docker image を build したあと smoke test を実行し、成功時に同じ container で shell を開きます。非 TTY 環境では自動で non-interactive mode に切り替わり、ログを `script/test_dotfiles/logs/` に保存します。詳細は `script/test_dotfiles/README.md` を参照してください。
 
-テスト後に同じ container の中へ入って確認したい場合は interactive mode を使います:
+常に non-interactive mode にしたい場合は次を使います:
 
 ```bash
-uv run python script/dotfiles.py test --interactive
+uv run python script/dotfiles.py test --no-interactive
 ```
 
-smoke test が成功すると shell が開き、shell を抜けると test run が終了します。
+interactive mode では smoke test が成功すると shell が開き、shell を抜けると test run が終了します。
 
 Poetry を追加で入れたい場合は、setup で作成された Python から CLI を直接使えます:
 

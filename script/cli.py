@@ -89,11 +89,11 @@ def setup(
 
 @app.command()
 def test(
-    interactive: bool = typer.Option(
-        False,
-        "--interactive",
-        "-i",
-        help="Drop into the container after the smoke test passes",
+    interactive: bool | None = typer.Option(
+        None,
+        "--interactive/--no-interactive",
+        "-i/-n",
+        help="Open a shell after the smoke test when a TTY is available",
     ),
 ) -> None:
     """Run the Linux smoke test in Docker."""

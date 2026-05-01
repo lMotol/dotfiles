@@ -49,11 +49,14 @@ def _run_interactive_command(command: list[str], *, cwd: Path | None = None) -> 
     subprocess.run(command, check=True, cwd=str(cwd) if cwd is not None else None)
 
 
-def run_smoke_test(repo_root: Path, *, interactive: bool = False) -> int:
+def run_smoke_test(repo_root: Path, *, interactive: bool | None = None) -> int:
     test_dir = repo_root / "script/test_dotfiles"
     log_dir = test_dir / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / f"setup-smoke-{datetime.now().strftime('%Y%m%d-%H%M%S')}.log"
+
+    if interactive is None:
+        interactive = sys.stdin.isatty() and sys.stdout.isatty()
 
     if interactive and (not sys.stdin.isatty() or not sys.stdout.isatty()):
         raise RuntimeError("Interactive smoke test requires a TTY")

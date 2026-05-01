@@ -17,12 +17,12 @@ Run the smoke test from the repository root:
 uv run python script/dotfiles.py test
 ```
 
-The generated log is written to `script/test_dotfiles/logs/`.
+When a TTY is available, this opens a shell in the same container after the smoke test passes. In non-TTY environments it automatically falls back to non-interactive mode and writes the generated log to `script/test_dotfiles/logs/`.
 
-To inspect the container after the smoke test passes, run:
+To force non-interactive mode, run:
 
 ```bash
-uv run python script/dotfiles.py test --interactive
+uv run python script/dotfiles.py test --no-interactive
 ```
 
-This opens a shell in the same container after verification completes. Exit the shell to end the test run.
+In interactive mode, exit the shell to end the test run.
