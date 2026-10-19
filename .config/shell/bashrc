@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 [ -f "$HOME/.config/shell/env.sh" ] && . "$HOME/.config/shell/env.sh"
 
 case $- in
