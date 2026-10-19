@@ -85,6 +85,7 @@ tmux
 
 ### 共通
 - Git
+- Delta（Git の差分表示）
 - Ripgrep
 - Tmux
 - Neovim

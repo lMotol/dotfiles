@@ -13,6 +13,7 @@ from .util import CommandRunner
 BREW_PACKAGES = [
     "curl",
     "git",
+    "git-delta",
     "ripgrep",
     "tmux",
     "fd",
@@ -26,6 +27,7 @@ BREW_PACKAGES = [
 APT_PACKAGES = [
     "curl",
     "git",
+    "git-delta",
     "ripgrep",
     "build-essential",
     "tmux",
