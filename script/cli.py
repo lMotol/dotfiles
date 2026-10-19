@@ -111,7 +111,7 @@ def test(
 
 def main(argv: Sequence[str] | None = None) -> int:
     try:
-        app(args=list(argv) if argv is not None else None, standalone_mode=False)
-        return 0
+        result = app(args=list(argv) if argv is not None else None, standalone_mode=False)
+        return result if isinstance(result, int) else 0
     except typer.Exit as exc:
         return exc.exit_code or 0
