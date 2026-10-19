@@ -19,6 +19,7 @@
 *.temp
 __pycache__/
 *.pyc
+*.egg-info/
 script/.setup-venv/
 
 # IDE
