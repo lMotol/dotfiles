@@ -20,7 +20,8 @@ def _assert_symlink_target(path: Path, expected: Path) -> None:
     if not path.is_symlink():
         raise RuntimeError(f"Expected symlink: {path}")
     actual = os.readlink(path)
-    if actual != str(expected):
+    # macOS exposes /private/tmp through /tmp; compare resolved targets.
+    if path.resolve() != expected.resolve():
         raise RuntimeError(
             f"Unexpected symlink target for {path}\nexpected: {expected}\nactual:   {actual}"
         )
