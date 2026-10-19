@@ -119,6 +119,12 @@ Python の仮想環境を作り直したい場合は、`script/.setup-venv/` を
 
 ### ローカルテスト
 
+インストールやホームの変更を行わない回帰テスト:
+
+```bash
+uv run python -m unittest discover -s tests -v
+```
+
 Linux smoke test は CLI subcommand から実行します:
 
 ```bash
