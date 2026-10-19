@@ -43,7 +43,12 @@ def main() -> int:
         _write_stub(fake_bin_dir / "codex", "codex")
         _write_stub(fake_bin_dir / "lazygit", "lazygit")
 
-        shutil.copytree(workspace_dir, repo_dir, symlinks=True, dirs_exist_ok=True)
+        shutil.copytree(
+            workspace_dir, repo_dir, symlinks=True, dirs_exist_ok=True,
+            ignore=shutil.ignore_patterns(
+                ".setup-venv", ".venv", "__pycache__", "*.egg-info", "node_modules", "logs",
+            ),
+        )
 
         env = os.environ.copy()
         env["PATH"] = f"{fake_bin_dir}:{env.get('PATH', '')}"
