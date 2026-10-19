@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 from .context import Settings
@@ -55,14 +56,16 @@ def symlink_path(source: Path, destination: Path) -> None:
     destination.symlink_to(source)
 
 
-def link_dotfiles(source: Path, destination: Path) -> None:
+def link_dotfiles(source: Path, destination: Path, managed_paths: set[Path]) -> None:
+    if source not in managed_paths:
+        return
     if source.is_dir():
         if destination.is_symlink() and destination.resolve() == source.resolve():
             destination.unlink()
 
         destination.mkdir(parents=True, exist_ok=True)
         for child in sorted(source.iterdir()):
-            link_dotfiles(child, destination / child.name)
+            link_dotfiles(child, destination / child.name, managed_paths)
         return
 
     symlink_path(source, destination)
@@ -74,13 +77,29 @@ def create_dotfile_links(context: Settings, runner: CommandRunner) -> None:
     runner.log("Creating dotfile symlinks...")
     runner.log("===================================")
 
+    # Use Git's file list so ignored dependencies, caches, and backups stay local.
+    completed = subprocess.run(
+        ["git", "ls-files", "--cached", "--recurse-submodules", "-z"],
+        cwd=context.root, check=True, capture_output=True, text=True,
+    )
+    managed_paths: set[Path] = set()
+    for name in completed.stdout.split("\0"):
+        if not name:
+            continue
+        path = context.root / name
+        managed_paths.add(path)
+        managed_paths.update(
+            parent for parent in path.parents
+            if parent != context.root and context.root in parent.parents
+        )
+
     for dotfile in sorted(context.root.iterdir()):
         if not dotfile.name.startswith("."):
             continue
         if should_skip_dotfile(dotfile.name):
             continue
         runner.log(f"Linking {dotfile.name}...")
-        link_dotfiles(dotfile, context.home / dotfile.name)
+        link_dotfiles(dotfile, context.home / dotfile.name, managed_paths)
 
 
 def run_setup(context: Settings, runner: CommandRunner) -> int:

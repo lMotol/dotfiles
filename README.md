@@ -58,7 +58,7 @@ cd ~/src/dotfiles
 - OSを自動検出（Linux/macOS）
 - 必要なパッケージのインストール
 - 追加ツールのインストール（fzf, Neovim, npm, tpm）
-- dotfilesのシンボリックリンク作成
+- Git 管理対象の dotfiles のみシンボリックリンクを作成（生成物・依存パッケージは除外）
 - `~/.bashrc`, `~/.bash_profile`, `~/.zshrc` に managed block を追加
 
 OpenCode の `package.json`、lock ファイル、`node_modules/` は実行環境ごとの生成物として Git 管理・リンク対象から除外します。
