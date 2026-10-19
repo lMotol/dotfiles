@@ -21,8 +21,11 @@ from script.install._script import run_install_script
 
 
 def install_tool(context: Settings, runner: CommandRunner) -> None:
+    from script.installers import install_npm_global_packages
+
     if runner.command_exists("npm"):
         runner.log(f"npm is already installed (version: {runner.command_first_line(['npm', '-v'])})")
+        install_npm_global_packages(context, runner)
         return
 
     nvm_dir = Path(os.environ.get("NVM_DIR", str(context.home / ".nvm")))
@@ -43,8 +46,6 @@ def install_tool(context: Settings, runner: CommandRunner) -> None:
     )
     runner.log("Installing Node.js LTS via nvm...")
     runner.run_shell(shell_command)
-    from script.installers import install_npm_global_packages
-
     install_npm_global_packages(context, runner)
     runner.log("npm and global packages have been installed successfully!")
 
