@@ -61,6 +61,7 @@ cd ~/src/dotfiles
 - Git 管理対象の dotfiles のみシンボリックリンクを作成（生成物・依存パッケージは除外）
 - `~/.bashrc`, `~/.bash_profile`, `~/.zshrc` に managed block を追加
 
+セットアップは必要なシステムパッケージを導入しますが、`apt upgrade` によるシステム全体の更新は行いません。
 OpenCode の `package.json`、lock ファイル、`node_modules/` は実行環境ごとの生成物として Git 管理・リンク対象から除外します。
 
 3. シェルを再読み込み:

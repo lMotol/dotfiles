@@ -124,11 +124,10 @@ def install_system_packages(context: Settings, runner: CommandRunner) -> None:
 
     if context.os_name == "linux":
         if context.ci:
-            runner.log("Skipping apt update/upgrade in CI")
+            runner.log("Skipping apt update in CI")
         else:
             runner.log("Updating package list...")
             runner.run(["sudo", "apt", "update"])
-            runner.run(["sudo", "apt", "upgrade", "-y"])
 
         runner.log("Installing packages via apt...")
         runner.run(["sudo", "apt-get", "install", "-y", *APT_PACKAGES])
