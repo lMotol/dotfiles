@@ -40,7 +40,7 @@ class SetupTests(unittest.TestCase):
             settings = Settings(root=root, home=home)
             for _ in range(2):
                 create_dotfile_links(settings, Mock())
-            self.assertEqual((home / '.config/tool/settings.json').resolve(), config / 'settings.json')
+            self.assertEqual((home / '.config/tool/settings.json').resolve(), (config / 'settings.json').resolve())
             self.assertTrue((home / '.config/editor/init.lua').is_symlink())
             for path in ('.git', '.gitignore', '.gitmodules', '.config/editor/.git',
                          '.config/editor/local-cache', '.config/tool/node_modules',
