@@ -42,7 +42,7 @@ def configure_shell_startup(home: Path, runner: CommandRunner) -> None:
 
 
 def should_skip_dotfile(name: str) -> bool:
-    return name in {".beads", ".git", ".github", ".gitignore", ".gitmodules", ".setup-venv"}
+    return name in {".git", ".github", ".gitignore", ".gitmodules", ".setup-venv"}
 
 
 def symlink_path(source: Path, destination: Path) -> None:

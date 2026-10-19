@@ -1,14 +1,8 @@
 # Agent Instructions
 
-This project uses **bd (beads)** for issue tracking.
-Run `bd prime` at the start of each session for full workflow context.
-
----
-
 ## Core Principles
 
-* **All work is tracked in bd**
-* **Work is performed per issue (task unit)**
+* **Work is performed per task**
 * **Each completed task MUST result in a commit**
 * **NEVER push automatically**
 * **All actions MUST record the acting agent (codex, gemini-cli, etc.)**
@@ -31,49 +25,13 @@ No variations allowed.
 
 ---
 
-## Quick Reference
-
-```bash
-bd ready                # Find available work
-bd show <id>            # View issue details
-bd update <id> --claim  # Claim work atomically
-bd close <id>           # Complete work
-```
-
----
-
 ## Task Workflow (MANDATORY)
 
-For every task (bd issue), follow this exact sequence:
+For every task:
 
-1. **Select work**
-
-   ```bash
-   bd ready
-   bd show <id>
-   ```
-
-2. **Claim**
-
-   ```bash
-   bd update <id> --claim
-   bd note <id> "agent:<name> claimed this issue"
-   ```
-
-3. **Implement**
-
-4. **Validate (if applicable)**
-
-   * Run tests
-   * Run linters
-   * Ensure build passes
-
-5. **Commit (REQUIRED for every completed task)**
-
-   ```bash
-   git add -A
-   git commit
-   ```
+1. Implement the requested change.
+2. Validate as applicable with tests, linters, or build checks.
+3. Commit the completed task.
 
    ### Commit Message Rules (STRICT)
 
@@ -82,13 +40,12 @@ For every task (bd issue), follow this exact sequence:
    * Descriptive and structured
    * Written in full sentences
    * Include **what, why, and context**
-   * Include references to the bd issue ID
    * Include **agent identification**
 
    #### Format:
 
    ```
-   <type>: <short summary> (bd:<id>) [agent:<name>]
+   <type>: <short summary> [agent:<name>]
 
    <detailed explanation>
    - What was changed
@@ -103,7 +60,7 @@ For every task (bd issue), follow this exact sequence:
    #### Example:
 
    ```
-   fix: prevent crash when config is missing (bd:123) [agent:gemini-cli]
+   fix: prevent crash when config is missing [agent:gemini-cli]
 
    Added null checks when loading configuration files to avoid runtime panic.
    This issue occurred when users launched the app without initializing config.
@@ -111,13 +68,6 @@ For every task (bd issue), follow this exact sequence:
    Agent: gemini-cli
 
    Also updated error messages to provide clearer guidance.
-   ```
-
-6. **Close issue**
-
-   ```bash
-   bd close <id>
-   bd note <id> "agent:<name> closed this issue"
    ```
 
 ---
@@ -153,35 +103,12 @@ cp -rf source dest
 
 ---
 
-## Beads Rules
-
-* Use `bd` for ALL task tracking
-
-* Do NOT use:
-
-  * TodoWrite
-  * Markdown TODOs
-  * External trackers
-
-* Use:
-
-  ```bash
-  bd remember
-  ```
-
-  for persistent knowledge
-
-* Always record agent activity via `bd note`
-
----
-
 ## Session End Protocol
 
 When ending a session:
 
 1. Ensure ALL completed work is committed
-2. Ensure bd issues are properly closed or updated
-3. Ensure no working changes remain:
+2. Ensure no working changes remain:
 
    ```bash
    git status
@@ -193,11 +120,8 @@ When ending a session:
 
 ## Summary
 
-* Work = bd issue
-* One issue → one logical commit
+* One task → one logical commit
 * Commit immediately after completion
 * Never push
 * Always write high-quality commit messages
-* ALWAYS record agent identity in:
-  - commit message
-  - bd note
+* ALWAYS record agent identity in the commit message

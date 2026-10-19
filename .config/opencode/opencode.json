@@ -11,6 +11,5 @@
         "Qwen3.6-27B-Q4_K_M.gguf": {}
       }
     }
-  },
-  "plugin": ["opencode-beads"]
+  }
 }

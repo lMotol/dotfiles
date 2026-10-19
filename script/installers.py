@@ -35,11 +35,9 @@ APT_PACKAGES = [
 ]
 
 NPM_GLOBAL_PACKAGES = {
-    "@beads/bd": "1.0.2",
     "@github/copilot": "0.0.332",
     "@google/gemini-cli": "0.39.1",
     "@openai/codex": "0.123.0",
-    "beads-ui": "0.12.0",
     "corepack": "0.29.4",
     "difit": "4.0.3",
     "npm": "11.6.1",
