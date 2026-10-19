@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import json
+import os
 import shlex
 import shutil
 import subprocess
 import urllib.request
+from urllib.parse import urlsplit
 from pathlib import Path
 from typing import Sequence
 
@@ -65,7 +67,12 @@ class CommandRunner:
         return completed.stdout.splitlines()[0]
 
     def fetch_json(self, url: str) -> dict[str, object]:
-        request = urllib.request.Request(url, headers={"User-Agent": "dotfiles-cli"})
+        headers = {"User-Agent": "dotfiles-cli"}
+        token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+        parsed = urlsplit(url)
+        if token and parsed.scheme == "https" and parsed.netloc == "api.github.com":
+            headers["Authorization"] = f"Bearer {token}"
+        request = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(request) as response:
             return json.load(response)
 

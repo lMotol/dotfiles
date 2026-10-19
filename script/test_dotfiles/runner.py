@@ -84,6 +84,11 @@ def run_smoke_test(repo_root: Path, *, interactive: bool | None = None) -> int:
                 env_value = os.environ.get(env_name)
                 if env_value is not None:
                     docker_run.extend(["-e", f"{env_name}={env_value}"])
+            # Pass names only: Docker reads the values from its environment.
+            # Never include token values in the command printed to the test log.
+            for token_name in ("GITHUB_TOKEN", "GH_TOKEN"):
+                if os.environ.get(token_name):
+                    docker_run.extend(["-e", token_name])
             if interactive:
                 docker_run.extend(["-it", IMAGE_NAME, "--interactive"])
                 print("Running setup smoke test in Docker and opening an interactive shell")
