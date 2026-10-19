@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 PYTHON_SCRIPT_DIR="$SCRIPT_DIR/script"
 VENV_DIR="$PYTHON_SCRIPT_DIR/.setup-venv"
 

@@ -1,3 +1,4 @@
+# shellcheck shell=sh
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-$EDITOR}"
 export GIT_EDITOR="${GIT_EDITOR:-$EDITOR}"
