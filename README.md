@@ -61,6 +61,8 @@ cd ~/src/dotfiles
 - dotfilesのシンボリックリンク作成
 - `~/.bashrc`, `~/.bash_profile`, `~/.zshrc` に managed block を追加
 
+OpenCode の `package.json`、lock ファイル、`node_modules/` は実行環境ごとの生成物として Git 管理・リンク対象から除外します。
+
 3. シェルを再読み込み:
 
 ```bash

@@ -31,3 +31,10 @@ test_local/
 
 # Logs
 *.log
+
+# OpenCode runtime dependencies and generated files
+.config/opencode/node_modules/
+.config/opencode/package.json
+.config/opencode/package-lock.json
+.config/opencode/bun.lock
+.config/opencode/.gitignore
