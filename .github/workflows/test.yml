@@ -43,6 +43,9 @@ jobs:
       - name: Run regression tests
         run: uv run python -m unittest discover -s tests -v
 
+      - name: Check Zsh syntax
+        run: zsh -n .config/shell/zshrc
+
       - name: Run macOS setup smoke test
         env:
           HOME: ${{ runner.temp }}/dotfiles-home
@@ -62,3 +65,5 @@ jobs:
         with:
           severity: warning
           ignore_paths: .git
+          # ShellCheck does not support Zsh; macOS checks it with zsh -n.
+          ignore_names: zshrc
