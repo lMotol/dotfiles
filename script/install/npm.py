@@ -31,7 +31,7 @@ def install_tool(context: Settings, runner: CommandRunner) -> None:
     nvm_dir = Path(os.environ.get("NVM_DIR", str(context.home / ".nvm")))
     if not (nvm_dir / "nvm.sh").exists():
         runner.log("Installing nvm...")
-        runner.run_shell("PROFILE=/dev/null curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash")
+        runner.run_shell("curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | PROFILE=/dev/null bash")
 
     if not (nvm_dir / "nvm.sh").exists():
         raise RuntimeError("nvm is not available after installation")
