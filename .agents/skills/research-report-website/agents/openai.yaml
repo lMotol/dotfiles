@@ -1,0 +1,4 @@
+interface:
+  display_name: "研究レポートサイトの運用"
+  short_description: "報告依頼ごとに日付付き記事を追加し、過去記事を保持して時系列・テーマ別に整理する"
+  default_prompt: "$research-report-website を使って、今回の報告を日付付きの新規記事にまとめ、記事一覧とテーマ別の導線に追加してください。"

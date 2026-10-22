@@ -1,0 +1,4 @@
+interface:
+  display_name: "案を鍛える質問"
+  short_description: "鋭い問答で案や実装の前提・根拠・弱点を掘り下げ、次の検証につなげる"
+  default_prompt: "$grilling を使って、この案の前提や弱点を一問ずつ厳しく掘り下げてください。"

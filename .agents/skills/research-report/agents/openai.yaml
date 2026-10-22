@@ -1,0 +1,4 @@
+interface:
+  display_name: "実験研究レポート"
+  short_description: "実験条件・測定値・実装の根拠を結び、図表付きの日本語研究レポートにまとめる"
+  default_prompt: "$research-report を使って、実験の目的・方法・結果・原因の検討を、根拠を追える日本語の研究レポートにまとめてください。"
